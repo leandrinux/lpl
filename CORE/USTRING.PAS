@@ -12,6 +12,9 @@ interface
     types, locale, 
     uobject, uexc;
 
+  const
+    C_STRING_CLASS_NAME = 'TString';
+
   type
     PString = ^TString;
     TString = object (TObject)
@@ -63,7 +66,7 @@ implementation
 
   function TString.getClassName: string;
   begin
-    getClassName := 'TString';
+    getClassName := C_STRING_CLASS_NAME;
   end;
 
   { TString private }

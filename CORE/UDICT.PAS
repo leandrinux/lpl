@@ -9,8 +9,11 @@ unit
 interface
 
   uses
-    uexc, uclasses, consts, types, utils, locale, strings,
-    uobject, ulist, unumber, ustring;
+    consts, types, utils, locale, strings,
+    uexc, uobject, ulist, unumber, ustring;
+
+  const
+    C_DICTIONARY_CLASS_NAME = 'TDictionary';
 
   type
 
@@ -36,7 +39,6 @@ interface
       function getBoolWithPath(path: string; alt: boolean): boolean;
       function getStringWithPath(path: string; alt: string): string;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
     private
       _nodes: PList;
     end;
@@ -195,7 +197,7 @@ implementation
       if (obj <> nil) then
       begin
         if (length(subpath) > 0) and
-          (obj^.getClassId = C_CLASS_ID_DICTIONARY) then
+          (obj^.getClassName = C_DICTIONARY_CLASS_NAME) then
         begin
           getObjectWithPath := PDictionary(obj)^.GetObjectWithPath(subpath)
         end else
@@ -209,7 +211,7 @@ implementation
   var obj: PObject;
   begin
     obj := getObjectWithPath(path);
-    if (obj <> nil) and (obj^.getClassId = C_CLASS_ID_NUMBER) then
+    if (obj <> nil) and (obj^.getClassName = C_NUMBER_CLASS_NAME) then
       getLongWithPath := PNumber(obj)^.getValue
     else
       getLongWithPath := alt;
@@ -219,7 +221,7 @@ implementation
   var obj: PObject;
   begin
     obj := getObjectWithPath(path);
-    if (obj <> nil) and (obj^.getClassId = C_CLASS_ID_NUMBER) then
+    if (obj <> nil) and (obj^.getClassName = C_NUMBER_CLASS_NAME) then
       getBoolWithPath := PNumber(obj)^.getBoolValue
     else
       getBoolWithPath := alt;
@@ -229,7 +231,7 @@ implementation
   var obj: PObject;
   begin
     obj := getObjectWithPath(path);
-    if (obj <> nil) and (obj^.getClassId = C_CLASS_ID_STRING) then
+    if (obj <> nil) and (obj^.getClassName = C_STRING_CLASS_NAME) then
       getStringWithPath := PString(obj)^.getValue
     else
       getStringWithPath := alt;
@@ -251,12 +253,7 @@ implementation
 
   function TDictionary.getClassName: string;
   begin
-    getClassName := 'TDictionary';
-  end;
-
-  function TDictionary.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_Dictionary;
+    getClassName := C_DICTIONARY_CLASS_NAME;
   end;
 
   { TDictionary private }

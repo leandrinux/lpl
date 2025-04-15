@@ -12,6 +12,9 @@ interface
     types, locale, 
     uobject, uexc;
 
+  const
+    C_NUMBER_CLASS_NAME = 'TNumber';
+
   type
     PNumber = ^TNumber;
     TNumber = object (TObject)
@@ -57,7 +60,7 @@ implementation
 
   function TNumber.getClassName: string;
   begin
-    getClassName := 'TNumber';
+    getClassName := C_NUMBER_CLASS_NAME;
   end;
 
   { TNumber private }

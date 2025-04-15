@@ -9,7 +9,7 @@ unit
 interface
 
   uses
-    consts, utils, uclasses, types, locale, math,
+    consts, utils, types, locale, math,
     uobject, uexc, ustream;
 
   type
@@ -26,7 +26,6 @@ interface
       function getSize: longint; virtual;
       function isReadOnly: boolean; virtual;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
     private
       _stream: PStream;
       _sourceSize: longint;
@@ -124,11 +123,6 @@ implementation
   function TCachedStream.getClassName: string;
   begin
     getClassName := 'TCachedStream';
-  end;
-
-  function TCachedStream.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_CachedStream;
   end;
 
   { TCachedStream private }
