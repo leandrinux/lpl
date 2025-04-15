@@ -9,7 +9,8 @@ unit
 interface
 
   uses
-    consts, utils, uexc, uclasses, types, locale, uobject, ubitmap;
+    consts, utils, uexc, types, locale, 
+    uobject, ubitmap;
 
   type
     PSubBitmap = ^TSubBitmap;
@@ -27,7 +28,6 @@ interface
       procedure rmove(x, y: integer);
       procedure setBitmap(bitmap: PBitmap);
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
     private
       _bitmap: PBitmap;
       _x, _y: word;
@@ -125,11 +125,6 @@ implementation
   function TSubBitmap.getClassName: string;
   begin
     getClassName := 'TSubBitmap';
-  end;
-
-  function TSubBitmap.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_SubBitmap;
   end;
 
   { TSubBitmap private }

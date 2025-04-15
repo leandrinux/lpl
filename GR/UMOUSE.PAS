@@ -1,5 +1,6 @@
 {
   UMouse Unit
+  Used to display the mouse cursor and respond to mouse events
   2022 LRT
 }
 unit
@@ -9,7 +10,7 @@ interface
 
   uses
     consts, utils, types, locale, int33,
-    uclasses, uobject, uexc, umsgs;
+    uobject, uexc, umsgs;
 
   type
     ECursorType = (
@@ -23,7 +24,6 @@ interface
       constructor init;
       destructor done; virtual;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
       procedure reset;
       procedure show;
       procedure hide;
@@ -86,11 +86,6 @@ implementation
   function TMouse.getClassName: string;
   begin
     getClassName := 'TMouse';
-  end;
-
-  function TMouse.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_Mouse;
   end;
 
   procedure TMouse.reset;

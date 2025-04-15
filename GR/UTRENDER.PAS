@@ -1,7 +1,7 @@
 {
   utrender Unit
-  Text renderer. Manages justification, kerning, line-height, word-wrapping,
-  cursor position, text bounds...
+  Text renderer unit, used to draw text to a canvas.
+  Manages justification, kerning, line-height, word-wrapping, cursor position, text bounds...
   2022 LRT
 }
 unit
@@ -10,8 +10,8 @@ unit
 interface
 
   uses
-    consts, utils, uexc, uclasses, types, locale, ascii, math,
-    uobject, ubitmap, ufont, utfont, usysfont, ucanvas;
+    consts, utils, types, locale, ascii, math,
+    uexc, uobject, ubitmap, ufont, utfont, usysfont, ucanvas;
 
   type
     PTextRenderer = ^TTextRenderer;
@@ -38,7 +38,6 @@ interface
       function getScale: byte;
       function getCanvas: PCanvas;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
     private
       _font: PFont;
       _lineHeight: byte;
@@ -234,11 +233,6 @@ implementation
   function TTextRenderer.getClassName: string;
   begin
     getClassName := 'TTextRenderer';
-  end;
-
-  function TTextRenderer.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_TextRenderer;
   end;
 
   { TTextRenderer private }

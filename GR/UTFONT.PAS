@@ -1,7 +1,6 @@
 {
   uffont Unit
-  A font implementation that uses 32 bit ints to store glyph data,
-  using only 1KB to store the entire charset
+  A font that uses 32 bit ints to store glyph data, using only 1KB to store the entire charset
   2022 LRT
 }
 unit
@@ -10,8 +9,8 @@ unit
 interface
 
   uses
-    consts, utils, uexc, uclasses, types, locale,
-    uobject, ufont, ucanvas, ustream;
+    consts, utils, types, locale,
+    uexc, uobject, ufont, ucanvas, ustream;
 
   type
     PSymbolArray = ^TSymbolArray;
@@ -31,7 +30,6 @@ interface
       procedure save(stream: PStream); virtual;
       procedure load(stream: PStream); virtual;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
     private
       _name: string32;
       _fromChar, _toChar: char;
@@ -169,11 +167,6 @@ implementation
   function TTinyFont.getClassName: string;
   begin
     getClassName := 'TTinyFont';
-  end;
-
-  function TTinyFont.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_TinyFont;
   end;
 
   { TTinyFont private }

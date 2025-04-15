@@ -1,6 +1,6 @@
 {
   umbitmap Unit
-
+  A bitmap that is the result of applying a mask to another bitmap
   2022 LRT
 }
 unit
@@ -9,7 +9,8 @@ unit
 interface
 
   uses
-    consts, utils, uexc, uclasses, types, locale, uobject, ubitmap;
+    consts, utils, types, locale, 
+    uexc, uobject, ubitmap;
 
   type
     PMaskBitmap = ^TMaskBitmap;
@@ -23,7 +24,6 @@ interface
       procedure setMaskColor(color: TColor);
       procedure setTransparentColor(color: TColor);
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
     private
       _bitmap: PBitmap;
       _mask: PBitmap;
@@ -83,11 +83,6 @@ implementation
   function TMaskBitmap.getClassName: string;
   begin
     getClassName := 'TMaskBitmap';
-  end;
-
-  function TMaskBitmap.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_MaskBitmap;
   end;
 
   { TMaskBitmap private }

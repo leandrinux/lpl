@@ -9,8 +9,8 @@ unit
 interface
 
   uses
-    consts, utils, uexc, uclasses, types, locale, uobject, ubitmap,
-    ucanvas;
+    consts, utils, uexc, types, locale, 
+    uobject, ubitmap, ucanvas;
 
   type
     PTurtle = ^TTurtle;
@@ -24,7 +24,6 @@ interface
       procedure setColor(color: TColor);
       procedure setPresetColor(color: EColor);
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
     private
       _bitmap: PBitmap;
       _canvas: PCanvas;
@@ -84,11 +83,6 @@ implementation
   function TTurtle.getClassName: string;
   begin
     getClassName := 'TTurtle';
-  end;
-
-  function TTurtle.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_Turtle;
   end;
 
   { TTurtle private }

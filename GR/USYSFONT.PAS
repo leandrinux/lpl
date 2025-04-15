@@ -1,8 +1,8 @@
 {
   usysfont Unit
-  The system font. No loading or saving to file required, it resides
-  fully in memory and it can simply be used by importing this unit.
-  It doesn't even need the full KB!
+  The default or system font. 
+  No loading or saving to file required, it resides fully in memory and it can simply be used by 
+  importing this unit. It doesn't even need the full KB!
   2022 LRT
 }
 unit
