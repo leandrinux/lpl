@@ -9,7 +9,8 @@ unit
 interface
 
   uses
-    consts, utils, uexc, uclasses, types, locale, uobject, ustream, math;
+    consts, utils, types, locale, 
+    uobject, uexc, ustream, math;
 
   type
     PSubstream = ^TSubstream;
@@ -25,7 +26,6 @@ interface
       function getSize: longint; virtual;
       function isReadOnly: boolean; virtual;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
     private
       _stream: PStream;
       _fromPos: longint;
@@ -95,11 +95,6 @@ implementation
   function TSubstream.getClassName: string;
   begin
     getClassName := 'TSubstream';
-  end;
-
-  function TSubstream.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_Substream;
   end;
 
   { TSubstream private }

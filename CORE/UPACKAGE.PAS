@@ -10,8 +10,8 @@ unit
 interface
 
   uses
-    consts, utils, uexc, uclasses, types, locale, uobject, ustream,
-    umstream, usstream;
+    consts, utils, uexc, types, locale, 
+    uobject, ustream, umstream, usstream;
 
   type
     { three bytes used to represent the file type }
@@ -65,7 +65,6 @@ interface
       function findFirst(var resourceInfo: TPKGResourceInfo): boolean;
       function findNext(var resourceInfo: TPKGResourceInfo): boolean;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
     private
       _stream: PStream;
       _header: TPKGHeader;
@@ -236,11 +235,6 @@ implementation
   function TPackage.getClassName: string;
   begin
     getClassName := 'TPackage';
-  end;
-
-  function TPackage.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_PACKAGE;
   end;
 
   { TPackage private }

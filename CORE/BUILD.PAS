@@ -15,14 +15,19 @@ uses
   ucstream,
   uestream,
   ufstream,
+  usstream,
+  uxstream,
 
   uansiw,
+  ustdout,
 
   uinifile,
   ujson,
+  upackage,
 
   umsgbus,
   ukeybrd,
+  uspeaker,
 
   ulog,
   userial,

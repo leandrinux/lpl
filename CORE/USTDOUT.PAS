@@ -9,7 +9,8 @@ unit
 interface
 
   uses
-    consts, utils, uexc, uclasses, types, locale, uobject, ustream, math;
+    consts, utils, uexc, types, locale, math,
+    uobject, ustream;
 
   type
     PStdOutput = ^TStdOutput;
@@ -25,7 +26,6 @@ interface
       function getSize: longint; virtual;
       function isReadOnly: boolean; virtual;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
     private
     end;
 
@@ -89,11 +89,6 @@ implementation
   function TStdOutput.getClassName: string;
   begin
     getClassName := 'TStdOutput';
-  end;
-
-  function TStdOutput.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_StdOutput;
   end;
 
   { TStdOutput private }

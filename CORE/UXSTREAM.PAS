@@ -9,8 +9,8 @@ unit
 interface
 
   uses
-    consts, utils, uexc, uclasses, types, locale, uobject, ustream,
-    math;
+    consts, utils, uexc, types, locale, math,
+    uobject, ustream;
 
   type
     PXorStream = ^TXorStream;
@@ -27,7 +27,6 @@ interface
       function getSize: longint; virtual;
       function isReadOnly: boolean; virtual;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
     private
       _stream: PStream;
       _password: pointer;
@@ -117,11 +116,6 @@ implementation
   function TXorStream.getClassName: string;
   begin
     getClassName := 'TXorStream';
-  end;
-
-  function TXorStream.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_XorStream;
   end;
 
   { TXorStream private }

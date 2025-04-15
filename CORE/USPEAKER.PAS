@@ -9,7 +9,8 @@ unit
 interface
 
   uses
-    consts, utils, uexc, uclasses, types, locale, uobject, xcrt;
+    consts, utils, uexc, types, locale, xcrt,
+    uobject;
 
   type
     PTone = ^TTone;
@@ -33,7 +34,6 @@ interface
       procedure sound(hz: word);
       procedure silence;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
     private
       _tone: PTone;
       procedure play(hz: word);
@@ -101,11 +101,6 @@ const
   function TSpeaker.getClassName: string;
   begin
     getClassName := 'TSpeaker';
-  end;
-
-  function TSpeaker.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_Speaker;
   end;
 
   { TSpeaker private }
