@@ -9,7 +9,8 @@ unit
 interface
 
   uses
-    uexc, uclasses, types, locale, uobject, ubitmap, math;
+    types, locale, math,
+    uobject, ubitmap, uexc;
 
   type
     PBitmap8 = ^TBitmap8;
@@ -24,7 +25,6 @@ interface
       function getBitsPerPixel: byte; virtual;
       function getRawPixels: pointer; virtual;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
     private
       _pixels: pbyte;
       _size: longint;
@@ -81,11 +81,6 @@ implementation
   function TBitmap8.getClassName: string;
   begin
     getClassName := 'TBitmap8';
-  end;
-
-  function TBitmap8.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_Bitmap8;
   end;
 
   { TBitmap8 private }

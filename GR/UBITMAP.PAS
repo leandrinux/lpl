@@ -1,6 +1,6 @@
 {
   UBitmap Unit
-  Abstract class representing a bitmap, that is, a matrix of pixels
+  Abstract class representing bitmap graphics
   2022 LRT
 }
 unit
@@ -9,7 +9,11 @@ unit
 interface
 
   uses
-    uexc, uclasses, types, locale, uobject, palette, math, upalette;
+    uexc, types, locale, palette, math,
+    uobject;
+
+  const
+    C_BITMAP_CLASS_NAME = 'TBitmap';
 
   type
     PBitmap = ^TBitmap;
@@ -22,20 +26,16 @@ interface
       procedure clear(color: TColor); virtual;
       procedure merge(src: PBitmap; x, y: word); virtual;
       procedure mergeT(src: PBitmap; x, y: word; transparent:TColor);
-      procedure setPalette(pal: PColorPalette);
       function getPixel(x, y: word): TColor; virtual;
       function getWidth: word;
       function getHeight: word;
       function getPresetColor(color: EColor): TColor;
       function getColorCount: longint; virtual;
       function getBitsPerPixel: byte; virtual;
-      function getPalette: PColorPalette;
       function getRawPixels: pointer; virtual;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
     private
       _width, _height: word;
-      _palette: PColorPalette;
     end;
 
 implementation
@@ -45,15 +45,13 @@ implementation
   constructor TBitmap.initWithSize(width, height: word);
   begin
     inherited init;
-    iassert(getClassId<>C_CLASS_ID_Bitmap, @self, 0, S_ERR_ABSTRACT_CLASS);
+    iassert(getClassName<>C_BITMAP_CLASS_NAME, @self, 0, S_ERR_ABSTRACT_CLASS);
     _width := width;
     _height := height;
-    _palette := nil;
   end;
 
   destructor TBitmap.done;
   begin
-    if _palette <> nil then _palette^.release;
     inherited done;
   end;
 
@@ -99,13 +97,6 @@ implementation
       end;
   end;
 
-  procedure TBitmap.setPalette(pal: PColorPalette);
-  begin
-    if _palette <> nil then _palette^.release;
-    _palette := pal;
-    _palette^.retain;
-  end;
-
   function TBitmap.getPixel(x, y: word): TColor;
   begin
     getPixel := 0;
@@ -136,11 +127,6 @@ implementation
     getBitsPerPixel := 0;
   end;
 
-  function TBitmap.getPalette: PColorPalette;
-  begin
-    getPalette := _palette;
-  end;
-
   function TBitmap.getRawPixels: pointer;
   begin
     getRawPixels := nil;
@@ -148,12 +134,7 @@ implementation
 
   function TBitmap.getClassName: string;
   begin
-    getClassName := 'TBitmap';
-  end;
-
-  function TBitmap.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_Bitmap;
+    getClassName := C_BITMAP_CLASS_NAME;
   end;
 
   { Other }

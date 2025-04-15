@@ -9,7 +9,8 @@ unit
 interface
 
   uses
-    consts, utils, uexc, uclasses, types, locale, uobject, math;
+    consts, utils, uexc, types, locale, math,
+    uobject;
 
   type
     PColorPalette = ^TColorPalette;
@@ -22,7 +23,6 @@ interface
       function getColor(index: byte): PRGBColor;
       function getColorCount: word;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
     private
       _count: word;
       _size: word;
@@ -78,11 +78,6 @@ implementation
   function TColorPalette.getClassName: string;
   begin
     getClassName := 'TColorPalette';
-  end;
-
-  function TColorPalette.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_ColorPalette;
   end;
 
   { TColorPalette private }

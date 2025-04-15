@@ -11,8 +11,8 @@ unit
 interface
 
   uses
-    consts, utils, uexc, uclasses, types, locale, math,
-    uobject, ustream, ubitmap, ubitmap8, upalette;
+    consts, utils, types, locale, math,
+    uexc, uobject, ustream, ubitmap, ubitmap8, upalette;
 
   type
     PBMPCoreHeader = ^TBMPCoreHeader;
@@ -114,7 +114,6 @@ interface
       function getHeader: PBMPCoreHeader;
       function getInfo: PBMPInfoHeader;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
     private
       _stream: PStream;
       _CoreHeader: TBMPCoreHeader;
@@ -122,7 +121,7 @@ interface
       _bitmap: PBitmap8;
       procedure loadHeaders;
       procedure loadBitmap;
-      procedure loadPalette;
+      function loadPalette: PColorPalette;
     end;
 
     PRGBQuad = ^TRGBQuad;
@@ -188,11 +187,6 @@ implementation
     getClassName := 'TBMPFile';
   end;
 
-  function TBMPFile.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_BMPFile;
-  end;
-
   { TBMPFile private }
 
   procedure TBMPFile.loadHeaders;
@@ -229,10 +223,9 @@ implementation
       inc(a, w + linePadding);
     end;
     freeMem(src, tempBitmapSize);
-    loadPalette;
   end;
 
-  procedure TBMPFile.loadPalette;
+  function TBMPFile.loadPalette: PColorPalette;
   var
     tablePosition: longint;
     colorTable, p: PRGBQuad;
@@ -256,9 +249,8 @@ implementation
       palette^.setColor(@rgbColor, i);
       inc(p);
     end;
-    _bitmap^.setPalette(palette);
-    palette^.release;
     freeMem(colorTable, colorTableSize);
+    loadPalette := palette;
   end;
 
   { Other }

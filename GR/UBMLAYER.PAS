@@ -9,7 +9,8 @@ unit
 interface
 
   uses
-    consts, utils, uexc, uclasses, types, locale, uobject, ubitmap;
+    consts, utils, uexc, types, locale, 
+    uobject, ubitmap;
 
   const
     C_DEFAULT_TRANSPARENT_COLOR = 0;
@@ -31,7 +32,6 @@ interface
       function isHidden: boolean;
       function isChanged: boolean;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
     private
       _bitmap: PBitmap;
       _x, _y: integer;
@@ -135,11 +135,6 @@ implementation
   function TBitmapLayer.getClassName: string;
   begin
     getClassName := 'TBitmapLayer';
-  end;
-
-  function TBitmapLayer.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_BitmapLayer;
   end;
 
   { TBitmapLayer private }

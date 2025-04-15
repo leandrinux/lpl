@@ -1,6 +1,6 @@
 {
   ubmstack Unit
-  A bitmap that's a stack of bitmaps
+  A bitmap that is composed by stack of bitmap layers
   2022 LRT
 }
 unit
@@ -9,8 +9,8 @@ unit
 interface
 
   uses
-    consts, utils, uexc, uclasses, types, locale, uobject, ulist,
-    ubmlayer, ubitmap;
+    consts, utils, types, locale, 
+    uexc, ubmlayer, ubitmap, uobject, ulist;
 
   const
     C_MAX_LAYERS = 4;
@@ -35,7 +35,6 @@ interface
       function getBackgroundColor: TColor;
       function getLayer(index:TLayerIndex): PBitmapLayer;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
     private
       _layers: TBitmapLayers;
       _backgroundColor: TColor;
@@ -121,11 +120,6 @@ implementation
   function TBitmapStack.getClassName: string;
   begin
     getClassName := 'TBitmapStack';
-  end;
-
-  function TBitmapStack.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_BitmapStack;
   end;
 
   { TBitmapStack private }
