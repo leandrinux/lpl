@@ -1,6 +1,6 @@
 {
   USerial Unit
-  Provides read-only stream access to a part of another stream
+  A stream wrapper used to write data to the serial port
   2022 LRT
 }
 unit

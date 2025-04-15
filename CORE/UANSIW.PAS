@@ -1,5 +1,6 @@
 {
   uansiw Unit
+  A stream that allows easy text output with ANSI encoding
   2022 LRT
 }
 unit

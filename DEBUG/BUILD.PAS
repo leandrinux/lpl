@@ -1,5 +1,5 @@
 uses 
- test;
+ test;  { Testing utilities }
 
 begin
 end.

@@ -1,6 +1,6 @@
 {
   ustdout Unit
-  Provides read-only stream access to a part of another stream
+  A stream wrapper of the standard output device
   2022 LRT
 }
 unit

@@ -1,5 +1,6 @@
 {
   ULog Unit
+  Creates event logs using ANSI colors
   2022 LRT
 }
 unit

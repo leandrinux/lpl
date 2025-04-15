@@ -1,6 +1,6 @@
 {
   ucstream Unit
-
+  A stream that provides read-only cached access to another stream
   2022 LRT
 }
 unit

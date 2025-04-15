@@ -1,6 +1,6 @@
 {
   uspeaker Unit
-
+  Simple PC speaker functions
   2022 LRT
 }
 unit

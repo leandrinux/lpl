@@ -1,5 +1,6 @@
 {
   UKeyBrd Unit
+  An object wrapper for the keyboard that emits messages with each keystroke
   2022 LRT
 }
 unit

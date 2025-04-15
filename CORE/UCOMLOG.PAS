@@ -1,5 +1,6 @@
 {
   UCOMLog Unit
+  Used to send log output to COM2
   2022 LRT
 }
 unit
