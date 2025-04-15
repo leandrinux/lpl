@@ -9,7 +9,8 @@ unit
 interface
 
   uses
-    consts, uexc, uclasses, types, locale, uobject, ustring, unumber;
+    consts, types, locale,
+    uobject, uexc, ustring, unumber;
 
   type
     PListNode = ^TListNode;
@@ -18,8 +19,6 @@ interface
     TList = object (TObject)
     public
       constructor init;
-      constructor initWithClassFamily(fromClassId, toClassId: word);
-      constructor initWithClassId(classId: word);
       destructor done; virtual;
       procedure addObject(obj: PObject);
       procedure addString(value: string);
@@ -47,15 +46,12 @@ interface
       function getIndexOf(obj: PObject): longint;
       function find(value: pointer; func: TCompareFunc): PObject;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
       procedure setWeak(value: boolean);
     private
       _head: PListNode;
       _tail: PListNode;
       _cursor: PListNode;
       _count: longint;
-      _enforceClassId: boolean;
-      _fromClassId, _toClassId: word;
       _isWeak: boolean;
       procedure initializeList;
       procedure makeNode(var node: PListNode; obj: PObject);
@@ -75,23 +71,7 @@ implementation
   begin
     inherited init;
     initializeList;
-    _enforceClassId := false;
     _isWeak := false;
-  end;
-
-  constructor TList.initWithClassFamily(fromClassId, toClassId: word);
-  begin
-    inherited init;
-    initializeList;
-    _enforceClassId := true;
-    _fromClassId := fromClassId;
-    _toClassId := toClassId;
-    _isWeak := false;
-  end;
-
-  constructor TList.initWithClassId(classId: word);
-  begin
-    initWithClassFamily(classId, classId);
   end;
 
   destructor TList.done;
@@ -105,11 +85,6 @@ implementation
     node: PListNode;
     lastNode: PListNode;
   begin
-    if _enforceClassId then
-      iassert(
-        (obj^.getClassId >= _fromClassId) and (obj^.getClassId <= _toClassId),
-        @self, 0, S_ERR_INCORRECT_MEMBER_CLASS
-      );
     makeNode(node, obj);
     if _count = 0 then
     begin
@@ -148,11 +123,6 @@ implementation
     node, current, previous: PListNode;
     i: longint;
   begin
-    if _enforceClassId then
-      iassert(
-        (obj^.getClassId >= _fromClassId) and (obj^.getClassId <= _toClassId),
-        @self, 0, S_ERR_INCORRECT_MEMBER_CLASS
-      );
     makeNode(node, obj);
     if index = 0 then
     begin
@@ -185,11 +155,6 @@ implementation
   var
     curr, prev, node: PListNode;
   begin
-    if _enforceClassId then
-      iassert(
-        (obj^.getClassId >= _fromClassId) and (obj^.getClassId <= _toClassId),
-        @self, 0, S_ERR_INCORRECT_MEMBER_CLASS
-      );
     makeNode(node, obj);
     prev := nil;
     curr := _head;
@@ -403,11 +368,6 @@ implementation
   function TList.getClassName: string;
   begin
     getClassName := 'TList';
-  end;
-
-  function TList.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_List;
   end;
 
   procedure TList.setWeak(value: boolean);

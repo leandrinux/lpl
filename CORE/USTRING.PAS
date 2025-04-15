@@ -9,7 +9,8 @@ unit
 interface
 
   uses
-    uexc, uclasses, types, locale, uobject;
+    types, locale, 
+    uobject, uexc;
 
   type
     PString = ^TString;
@@ -21,7 +22,6 @@ interface
       procedure setValue(value: string);
       function getValue: string;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
     private
       _value: ^string;
     end;
@@ -64,11 +64,6 @@ implementation
   function TString.getClassName: string;
   begin
     getClassName := 'TString';
-  end;
-
-  function TString.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_String;
   end;
 
   { TString private }

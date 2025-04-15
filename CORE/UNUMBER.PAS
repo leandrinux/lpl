@@ -9,7 +9,8 @@ unit
 interface
 
   uses
-    uexc, uclasses, types, locale, uobject;
+    types, locale, 
+    uobject, uexc;
 
   type
     PNumber = ^TNumber;
@@ -21,7 +22,6 @@ interface
       function getValue: longint;
       function getBoolValue: boolean;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
     private
       _value: longint;
     end;
@@ -58,11 +58,6 @@ implementation
   function TNumber.getClassName: string;
   begin
     getClassName := 'TNumber';
-  end;
-
-  function TNumber.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_Number;
   end;
 
   { TNumber private }

@@ -9,7 +9,8 @@ unit
 interface
 
   uses
-    consts, utils, uexc, uclasses, types, locale, uobject, ustream, math,
+    consts, utils, uexc, types, locale, math,
+    uobject, ustream,
     int14;
 
   type
@@ -26,7 +27,6 @@ interface
       function getSize: longint; virtual;
       function isReadOnly: boolean; virtual;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
     private
       _handle: text;
     end;
@@ -94,11 +94,6 @@ implementation
   function TSerial.getClassName: string;
   begin
     getClassName := 'TSerial';
-  end;
-
-  function TSerial.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_Serial;
   end;
 
   { TSerial private }
