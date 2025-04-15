@@ -1,7 +1,6 @@
 {
   ufont Unit
-  Abstract class representing graphic fonts that are later used to write
-  text to a canvas
+  Abstract class representing graphic fonts that are later used to write text to a canvas
   2022 LRT
 }
 unit
@@ -11,7 +10,7 @@ interface
 
   uses
     consts, utils, types, locale,
-    uexc, uclasses, uobject, ucanvas, ustream;
+    uexc, uobject, ucanvas, ustream;
 
   type
     TFontName = string32;
@@ -26,7 +25,6 @@ interface
       procedure setName(name: TFontName);
       function getName: TFontName;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
       procedure save(stream: PStream); virtual;
       procedure load(stream: PStream); virtual;
     private
@@ -79,11 +77,6 @@ implementation
   function TFont.getClassName: string;
   begin
     getClassName := 'TFont';
-  end;
-
-  function TFont.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_Font;
   end;
 
   { TFont private }

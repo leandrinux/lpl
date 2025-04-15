@@ -1,7 +1,6 @@
 {
   UDisplay Unit
-  Implements the program interface to the video adapter, allowing to get
-  video information, set video modes and access the display canvas
+  An interface to the video adapter used to get info, set video modes and draw to the display
   2022 LRT
 }
 unit
@@ -10,8 +9,8 @@ unit
 interface
 
   uses
-    uexc, uclasses, types, locale, uobject, uviddrv, uvgadrv, ulog,
-    ucanvas, ubitmap, ubitmap8, upalette;
+    types, locale, 
+    uobject, uviddrv, uvgadrv, ulog, uexc, ucanvas, ubitmap, ubitmap8, upalette;
 
   type
     PDisplayAdapter = ^TDisplayAdapter;
@@ -30,7 +29,6 @@ interface
       function getDriver: PVideoDriver;
       function getVideoDriverName: string;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
     private
       _driver: PVideoDriver;
       _canvas: PCanvas;
@@ -136,11 +134,6 @@ implementation
   function TDisplayAdapter.getClassName: string;
   begin
     getClassName := 'TDisplayAdapter';
-  end;
-
-  function TDisplayAdapter.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_DisplayAdapter;
   end;
 
   { private }

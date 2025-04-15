@@ -1,6 +1,6 @@
 {
   UVidDrv Unit
-  Description of the unit
+  An abstract video driver for a display adapter
   2022 LRT
 }
 unit
@@ -9,7 +9,7 @@ unit
 interface
 
   uses
-    uexc, uclasses, types, locale, uobject, ubitmap, upalette;
+    uexc, types, locale, uobject, ubitmap, upalette;
 
   type
     PVideoDriver = ^TVideoDriver;
@@ -27,7 +27,6 @@ interface
       procedure setPalette(palette: PColorPalette); virtual;
       function getDriverName: string; virtual;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
     private
     end;
 
@@ -81,11 +80,6 @@ implementation
   function TVideoDriver.getClassName: string;
   begin
     getClassName := 'TVideoDriver';
-  end;
-
-  function TVideoDriver.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_VideoDriver;
   end;
 
   { Other }

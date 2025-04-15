@@ -15,7 +15,8 @@ unit
 interface
 
   uses
-    uexc, uclasses, types, locale, uobject, ubitmap, ubitmap1, upoints;
+    uexc, types, locale,
+    uobject, ubitmap, ubitmap1, upath;
 
   const
     C_DEFAULT_STROKE_COLOR = EWhite;
@@ -50,16 +51,16 @@ interface
       procedure setPixel(x, y: word; brush: PBrush);
       procedure hline(x1, x2, y: word);
       procedure vline(y1, y2, x: word);
-      function createLinePoints(x1, y1, x2, y2: integer): PPoints;
+      function createLinePoints(x1, y1, x2, y2: integer): PPath;
       procedure line(x1, y1, x2, y2: integer);
       procedure rect(x, y, width, height: word);
       procedure frect(x, y, width, height: word);
-      function createCirclePoints(x, y, radius: word): PPoints;
+      function createCirclePoints(x, y, radius: word): PPath;
       procedure circle(x, y, radius: word);
       procedure grid(x, y, columns, rows, colWidth, rowHeight: word);
       procedure ffill(x, y: word);
-      procedure plot(points: PPoints; brush: PBrush; dx, dy: integer);
-      procedure plotAlongPoints(a, b: PPoints; brush: PBrush);
+      procedure plot(points: PPath; brush: PBrush; dx, dy: integer);
+      procedure plotAlongPoints(a, b: PPath; brush: PBrush);
       procedure clear;
       procedure setPattern(pattern: EStandardDrawPattern; brush: PBrush);
       procedure setPatternAuxFillColor(enabled: boolean; color: TColor);
@@ -69,7 +70,6 @@ interface
       function getStrokeBrush: PBrush;
       function getFillBrush: PBrush;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
     private
       _bitmap: PBitmap;
       _stroke, _fill: TBrush;
@@ -133,7 +133,7 @@ implementation
             _bitmap^.setPixel(x, y, _auxFillColor);
   end;
 
-  function TCanvas.createLinePoints(x1, y1, x2, y2: integer): PPoints;
+  function TCanvas.createLinePoints(x1, y1, x2, y2: integer): PPath;
     function sign(a:integer): integer;
     begin
       if a>0 then sign:=+1 else if a<0 then sign:=-1 else sign:=0;
@@ -142,10 +142,10 @@ implementation
   var
     d1x, d1y, d2x, d2y:integer;
     u, v, m, n, s, i: integer;
-    points: PPoints;
+    points: PPath;
 
   begin
-     points := new(PPoints, initWithSize(C_DEFAULT_POINTS_MAX));
+     points := new(PPath, initWithSize(C_DEFAULT_POINTS_MAX));
      u:= x2 - x1;
      v:= y2 - y1;
      d1x:= sign(u);
@@ -182,7 +182,7 @@ implementation
 
   procedure TCanvas.line(x1, y1, x2, y2: integer);
   var
-    p: PPoints;
+    p: PPath;
   begin
     p := createLinePoints(x1, y1, x2, y2);
     plot(p, @_stroke, 0, 0);
@@ -227,20 +227,20 @@ implementation
 
   procedure TCanvas.circle(x, y, radius: word);
   var
-    p: PPoints;
+    p: PPath;
   begin
     p := createCirclePoints(x, y, radius);
     plot(p, @_stroke, 0, 0);
     p^.release;
   end;
 
-  function TCanvas.createCirclePoints(x, y, radius: word): PPoints;
+  function TCanvas.createCirclePoints(x, y, radius: word): PPath;
   var
     px, py, d: integer;
     dE, dSE: integer;
-    points: PPoints;
+    points: PPath;
   begin
-    points := new(PPoints, initWithSize(C_DEFAULT_POINTS_MAX));
+    points := new(PPath, initWithSize(C_DEFAULT_POINTS_MAX));
     px := 0;
     py := radius;
     d := 1 - radius;
@@ -349,7 +349,7 @@ implementation
     mask^.release;
   end;
 
-  procedure TCanvas.plot(points: PPoints; brush: PBrush; dx, dy: integer);
+  procedure TCanvas.plot(points: PPath; brush: PBrush; dx, dy: integer);
   var
     p: PPoint;
     length: word;
@@ -363,7 +363,7 @@ implementation
     end;
   end;
 
-  procedure TCanvas.plotAlongPoints(a, b: PPoints; brush: PBrush);
+  procedure TCanvas.plotAlongPoints(a, b: PPath; brush: PBrush);
   var
     p: PPoint;
     length: word;
@@ -427,11 +427,6 @@ implementation
   function TCanvas.getClassName: string;
   begin
     getClassName := 'TCanvas';
-  end;
-
-  function TCanvas.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_Canvas;
   end;
 
   { TCanvas private }

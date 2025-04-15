@@ -9,8 +9,8 @@ unit
 interface
 
   uses
-    uexc, uclasses, types, locale, uobject, uviddrv, int10, math,
-    ubitmap, ubitmap8, upalette, ulog;
+    types, locale, int10, math,
+    uexc, uobject, uviddrv, ubitmap, ubitmap8, upalette, ulog;
 
   type
     PVGADriver = ^TVGADriver;
@@ -28,7 +28,6 @@ interface
       procedure setPalette(palette: PColorPalette); virtual;
       function getDriverName: string; virtual;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
     private
       _currentVideoMode: PVideoMode;
       _bitmap: PBitmap;
@@ -48,7 +47,6 @@ interface
       function getColorCount: longint; virtual;
       function getBitsPerPixel: byte; virtual;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
     end;
 
 implementation
@@ -160,11 +158,6 @@ implementation
     getClassName := 'TVGADriver';
   end;
 
-  function TVGADriver.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_VGADriver;
-  end;
-
   { TVGAMode13Bitmap public }
 
   constructor TVGAMode13Bitmap.init;
@@ -255,11 +248,6 @@ implementation
   function TVGAMode13Bitmap.getClassName: string;
   begin
     getClassName := 'TVGAMode13Bitmap';
-  end;
-
-  function TVGAMode13Bitmap.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_VGAMode13Bitmap;
   end;
 
   { Other }

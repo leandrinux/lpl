@@ -1,79 +1,74 @@
 {
-  UPoints Unit
+  UPath Unit
+  Represents a fixed size path of points (x, y)
   2022 LRT
 }
 unit
-  UPoints;
+  UPath;
 
 interface
 
   uses
-    consts, utils, uclasses, types, locale,
+    consts, utils, types, locale,
     uobject, uexc, math;
 
   type
-    PPoints = ^TPoints;
-    TPoints = object (TObject)
+    PPath = ^TPath;
+    TPath = object (TObject)
     public
       constructor initWithSize(size: word);
       destructor done; virtual;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
       procedure add(x, y: integer);
       procedure get(var first: PPoint; var length: word);
     private
       _size: word;
       _length: word;
-      _points: PPoint;
+      _path: PPoint;
     end;
 
 implementation
 
-  { TPoints public }
+  { TPath public }
 
-  constructor TPoints.initWithSize(size: word);
+  constructor TPath.initWithSize(size: word);
   begin
     inherited init;
     _size := size;
     _length := 0;
-    getMem(_points, sizeof(TPoint) * _size);
+    getMem(_path, sizeof(TPoint) * _size);
   end;
 
-  destructor TPoints.done;
+  destructor TPath.done;
   begin
-    freeMem(_points, sizeof(TPoint) * _size);
+    freeMem(_path, sizeof(TPoint) * _size);
     inherited done;
   end;
 
-  procedure TPoints.add(x, y: integer);
+  procedure TPath.add(x, y: integer);
   var
     p: PPoint;
   begin
     if _length = _size then exit;
-    p := _points;
+    p := _Path;
     inc(p, _length);
     p^.x := x;
     p^.y := y;
     inc(_length);
   end;
 
-  procedure TPoints.get(var first: PPoint; var length: word);
+  procedure TPath.get(var first: PPoint; var length: word);
   begin
-    first := _points;
+    first := _Path;
     length := _length;
   end;
 
-  function TPoints.getClassName: string;
+  function TPath.getClassName: string;
   begin
-    getClassName := 'TPoints';
+    getClassName := 'TPath';
   end;
 
-  function TPoints.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_Path;
-  end;
-
-  { TPoints private }
+  { TPath private }
 
   { Other }
 
