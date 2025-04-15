@@ -9,7 +9,8 @@ unit
 interface
 
   uses
-    uexc, uclasses, types, uobject, ustream, locale;
+    types, locale,
+    uobject, ustream, uexc;
 
   type
     PFileStream = ^TFileStream;
@@ -27,7 +28,6 @@ interface
       function isReadOnly: boolean; virtual;
       function getFilePath: string;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
     private
       _fileHandle: file;
       _filePath: TFilePath;
@@ -129,11 +129,6 @@ implementation
   function TFileStream.getClassName: string;
   begin
     getClassName := 'TFileStream';
-  end;
-
-  function TFileStream.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_FILESTREAM;
   end;
 
 end.

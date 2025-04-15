@@ -9,7 +9,8 @@ unit
 interface
 
   uses
-    uexc, uclasses, types, locale, uobject, ustream, math;
+    uexc, types, locale, math,
+    uobject, ustream;
 
   const
     C_BLOCK_SIZE = 60000;  { maximum size of each memory block }
@@ -40,7 +41,6 @@ interface
       function getSize: longint; virtual;
       function getMaximumSize: longint;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
     private
       _blocks: TMemoryBlocks;
       _memorySize: longint;
@@ -168,11 +168,6 @@ implementation
   function TMemoryStream.getClassName: string;
   begin
     getClassName := 'TMemoryStream';
-  end;
-
-  function TMemoryStream.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_MemoryStream;
   end;
 
   function TMemoryStream.getPosition: longint;

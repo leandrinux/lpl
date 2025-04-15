@@ -9,8 +9,8 @@ unit
 interface
 
   uses
-    ascii, consts, utils, uexc, uclasses, types, locale, uobject, ustream,
-    udict, ulist, ustring, unumber;
+    ascii, consts, utils, types, locale,
+    uobject, ustream, uexc, udict, ulist, ustring, unumber;
 
   type
     PJsonReader = ^TJsonReader;
@@ -18,7 +18,6 @@ interface
     public
       function createFromStream(stream: PStream): PObject;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
     private
       _stream: PStream;
       function readNext: char;
@@ -50,11 +49,6 @@ implementation
   function TJsonReader.getClassName: string;
   begin
     getClassName := 'TJsonReader';
-  end;
-
-  function TJsonReader.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_JsonReader;
   end;
 
   { TJsonReader private }

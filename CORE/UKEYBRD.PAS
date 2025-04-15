@@ -8,7 +8,7 @@ unit
 interface
 
   uses
-    xcrt, consts, utils, uclasses, types, locale,
+    xcrt, consts, utils, types, locale,
     uobject, uexc, umsgs;
 
   type
@@ -18,7 +18,6 @@ interface
       constructor init;
       destructor done; virtual;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
       function update: boolean;
       function getLastKeyDown: char;
     private
@@ -45,11 +44,6 @@ implementation
   function TKeyboard.getClassName: string;
   begin
     getClassName := 'TKeyboard';
-  end;
-
-  function TKeyboard.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_Keyboard;
   end;
 
   function TKeyboard.update: boolean;

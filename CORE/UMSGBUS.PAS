@@ -9,7 +9,8 @@ unit
 interface
 
   uses
-    consts, utils, uexc, uclasses, types, locale, uobject, ulist;
+    consts, utils, uexc, types, locale, 
+    uobject, ulist;
 
   type
     PMessageBus = ^TMessageBus;
@@ -22,7 +23,6 @@ interface
       procedure broadcast(msg: PObjectMessage);
       procedure receiveMessage(msg: PObjectMessage); virtual;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
     private
       _list: PList;
     end;
@@ -76,11 +76,6 @@ implementation
   function TMessageBus.getClassName: string;
   begin
     getClassName := 'TMessageBus';
-  end;
-
-  function TMessageBus.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_MessageBus;
   end;
 
   { TMessageBus private }

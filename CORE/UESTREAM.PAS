@@ -10,7 +10,8 @@ unit
 interface
 
   uses
-    uexc, uclasses, types, locale, uobject, ustream, math;
+    types, locale, math,
+    uobject, ustream, uexc;
 
   type
     PEMSStream = ^TEMSStream;
@@ -26,7 +27,6 @@ interface
       function getSize: longint; virtual;
       function getMaximumSize: longint;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
     private
       _size: longint;        { amount of memory reserved for the stream }
       _position: longint;    { current position }
@@ -154,11 +154,6 @@ implementation
   function TEMSStream.getClassName: string;
   begin
     getClassName := 'TEMSStream';
-  end;
-
-  function TEMSStream.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_MemoryStream;
   end;
 
   { TEMSStrem private }

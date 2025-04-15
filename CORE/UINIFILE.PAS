@@ -9,8 +9,8 @@ unit
 interface
 
   uses
-    consts, utils, uexc, uclasses, types, locale, uobject,
-    strings, ustream, udict;
+    consts, utils, types, locale, strings,
+    uobject, uexc, ustream, udict;
 
   type
     PINIFile = ^TINIFile;
@@ -21,7 +21,6 @@ interface
       function getValue(path: string): string;
       destructor done; virtual;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
     private
       _root, _current: PDictionary;
       procedure parseLine(s: string);
@@ -78,11 +77,6 @@ implementation
   function TINIFile.getClassName: string;
   begin
     getClassName := 'TINIFile';
-  end;
-
-  function TINIFile.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_INIFile;
   end;
 
   { TINIFile private }
