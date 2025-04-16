@@ -9,6 +9,9 @@ type
     White
   );
 
+  TFunction = procedure (x, y: word; c: TColor);
+
+
 procedure setMode(mode: byte); assembler;
 asm
   mov ah, 0  { BIOS video function: set mode }
@@ -16,7 +19,7 @@ asm
   int 10h    { BIOS video interrupt }
 end;
 
-procedure setPixel(x, y: word; c: TColor);
+procedure setPixel(x, y: word; c: TColor); far;
 var
   pixelNro: longint;
   byteNro: longint;
@@ -39,7 +42,7 @@ begin
   Mem[base:byteNro] := value;
 end;
 
-procedure PutPixel(x, y: Word; color: TColor);
+procedure GPTPixel(x, y: Word; color: TColor); far;
 var
   offset: Word;
   bitShift: Byte;
@@ -67,29 +70,48 @@ begin
   p^ := (p^ and pixelMask) or pixelValue;
 end;
 
-procedure plot(x, y, w, h: word);
+procedure plot(func: TFunction; x, y, w, h: word);
 var 
   i: word;
 begin
-  for i:=y to y+w-1 do 
+
+  for i:=y to y+h-1 do 
   begin
-    setpixel(x, i, Cyan);
-    setpixel(x+h-1, i, Cyan);
+    func(x, i, Cyan);
+    func(x+w-1, i, Cyan);
   end;
-  for i:=x to x+h-1 do 
+  for i:=x to x+w-1 do 
   begin
-    setpixel(i, y, Magenta);
-    setpixel(i, y+w-1, Magenta);
+    func(i, y, Magenta);
+    func(i, y+h-1, Magenta);
   end;
 end;
 
+function testfunc(func: TFunction): longint;    
+var
+  before, after: longint;
+  i: byte;
 begin
-
+  before := C_TICKS^;
   setMode(5); { CGA 320x200 4-color mode }
- 
-  plot(10,10, 50, 50);
-  readkey;
-
+  i := 0;
+  while i<100 do
+  begin
+    plot(setPixel, i, i, 320-(i shl 1), 200-(i shl 1));
+    i := i + 5;
+  end;
   setMode(3); { 80x25 16 color text (CGA,EGA,MCGA,VGA) }
+  after := C_TICKS^;
+  testfunc := after - before;
+end;
 
+var 
+  a, b: longint;
+begin
+  a := testfunc(setPixel);
+  b := testfunc(GPTPixel);
+
+  writeln('setpixel: ', a);
+  writeln('GPTpixel: ', b);
+  readkey;
 end.
