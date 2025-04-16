@@ -88,7 +88,7 @@ begin
   shloff := (3 - pixelOff) shl 1;
   mask := not (3 shl shloff);
   color := (byte(c) shl shloff);
-  if (y and 1) = 0 then p := ptr($B800, byteNro) else p := ptr($BA00, byteNro);
+  if boolean(y and 1) then p := ptr($BA00, byteNro) else p := ptr($B800, byteNro);
   p^ := p^ and mask or color;
 end;
 
