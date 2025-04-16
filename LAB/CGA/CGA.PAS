@@ -11,7 +11,6 @@ type
 
   TFunction = procedure (x, y: word; c: TColor);
 
-
 procedure setMode(mode: byte); assembler;
 asm
   mov ah, 0  { BIOS video function: set mode }
@@ -220,7 +219,6 @@ end;
 var 
   a, b, c, d, baseline, gpt: longint;
 begin
-{
   baseline := testfunc(nothing);
   a := testfunc(v1Pixel);
   b := testfunc(v2Pixel);
@@ -233,10 +231,5 @@ begin
   writeln('v2Pixel: ', b);
   writeln('v3Pixel: ', c);
   writeln('v4Pixel: ', d);
-}
-  {gpt := testfunc(GPTPixel);}
-  d := testfunc(v4Pixel);
-
-  {writeln('GPTpixel: ', gpt);}
-  writeln('v4Pixel: ', d);
+  writeln('GPTpixel: ', gpt);
 end.
