@@ -19,7 +19,11 @@ asm
   int 10h    { BIOS video interrupt }
 end;
 
-procedure setPixel(x, y: word; c: TColor); far;
+procedure nothing(x, y: word; c: TColor); far;
+begin
+end;
+
+procedure v1Pixel(x, y: word; c: TColor); far;
 var
   pixelNro: longint;
   byteNro: longint;
@@ -40,6 +44,52 @@ begin
   value := Mem[base:byteNro];
   value := value and mask or color;
   Mem[base:byteNro] := value;
+end;
+
+procedure v2Pixel(x, y: word; c: TColor); far;
+var
+  pixelNro: word;
+  byteNro: word;
+  pixelOff: word;
+  value: byte;
+  mask: byte;
+  shloff: byte;
+  color: byte;
+  base: word;
+  p: ^byte;
+begin
+  pixelNro := (y shr 1);
+  pixelNro := pixelNro shl 8 + pixelNro shl 6 + x;
+  byteNro := pixelNro shr 2;    
+  pixelOff := pixelNro and $3;   
+  shloff := (3 - pixelOff) shl 1;
+  mask := not (3 shl shloff);
+  color := (ord(c) shl shloff);
+  if (y and 1) = 0 then base := $B800 else base := $BA00;
+  p := ptr(base, byteNro);
+  p^ := p^ and mask or color;
+end;
+
+procedure v3Pixel(x, y: word; c: TColor); far;
+var
+  pixelNro: word;
+  byteNro: word;
+  pixelOff: word;
+  base: word;
+  value: byte;
+  mask: byte;
+  shloff: byte;
+  color: byte;
+  p: ^byte;
+begin
+  pixelNro := (y shr 1) shl 8 + (y shr 1) shl 6 + x;
+  byteNro := pixelNro shr 2;    
+  pixelOff := pixelNro and $3;   
+  shloff := (3 - pixelOff) shl 1;
+  mask := not (3 shl shloff);
+  color := (byte(c) shl shloff);
+  if (y and 1) = 0 then p := ptr($B800, byteNro) else p := ptr($BA00, byteNro);
+  p^ := p^ and mask or color;
 end;
 
 procedure GPTPixel(x, y: Word; color: TColor); far;
@@ -94,24 +144,31 @@ var
 begin
   before := C_TICKS^;
   setMode(5); { CGA 320x200 4-color mode }
+
   i := 0;
   while i<100 do
   begin
-    plot(setPixel, i, i, 320-(i shl 1), 200-(i shl 1));
+    plot(func, i, i, 320-(i shl 1), 200-(i shl 1));
     i := i + 5;
   end;
+
   setMode(3); { 80x25 16 color text (CGA,EGA,MCGA,VGA) }
   after := C_TICKS^;
   testfunc := after - before;
 end;
 
 var 
-  a, b: longint;
+  a, b, c, baseline, gpt: longint;
 begin
-  a := testfunc(setPixel);
-  b := testfunc(GPTPixel);
+  baseline := testfunc(nothing);
+  a := testfunc(v1Pixel);
+  b := testfunc(v2Pixel);
+  c := testfunc(v3Pixel);
+  gpt := testfunc(GPTPixel);
 
-  writeln('setpixel: ', a);
-  writeln('GPTpixel: ', b);
-  readkey;
+  writeln('nothing: ', baseline);
+  writeln('v1Pixel: ', a);
+  writeln('v2Pixel: ', b);
+  writeln('v3Pixel: ', c);
+  writeln('GPTpixel: ', gpt);
 end.
