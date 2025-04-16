@@ -48,14 +48,17 @@ implementation
 
   function TVideoDriver.getWidth: word;
   begin
+    getWidth := 0;
   end;
 
   function TVideoDriver.getHeight: word; 
   begin
+    getHeight := 0;
   end;
   
   function TVideoDriver.detect: boolean; 
   begin
+    detect := false;
   end;
   
   procedure TVideoDriver.start; 
