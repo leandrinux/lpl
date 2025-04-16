@@ -92,6 +92,66 @@ begin
   p^ := p^ and mask or color;
 end;
 
+procedure v4Pixel(x, y: word; color: TColor); far; assembler;
+label is_even, mask;
+asm  
+  { pixelNro := (y shr 1) shl 8 + (y shr 1) shl 6 + x; }
+  mov ax, y
+  shr ax, 1   
+  mov bx, ax
+  mov cl, 6
+  shl bx, cl
+  mov cl, 8
+  shl ax, cl
+  add ax, bx
+  add ax, x   { ax = pixelNro }
+
+  { byteNro := pixelNro shr 2; }
+  mov di, ax
+  mov cl, 2
+  shr di, cl  { di = byteNro }
+
+  { pixelOff := pixelNro and $3; }
+  mov cx, ax
+  and cx, $3  { cx = pixelOff }
+
+  { shloff := (3 - pixelOff) shl 1; }
+  mov ax, 3
+  sub ax, cx
+  shl ax, 1   { ax = shloff }
+
+  { if boolean(y and 1) then p := ptr($BA00, byteNro) else p := ptr($B800, byteNro); }
+  mov bx, y
+  and bx, 1
+  jnz is_even
+  mov bx, $BA00
+  jmp mask
+
+  is_even:
+  mov bx, $B800  
+
+  mask:
+  mov es, bx     { es = $BA00 or $B800}
+
+  { mask := not (3 shl shloff); }
+  mov bx, 3
+  mov cl, al 
+  shl bx, cl { bx = mask }
+
+  { color := (byte(c) shl shloff) ; }
+  xor dh, dh
+  mov dl, color
+  mov cl, al
+  shl dx, cl { dx = color}
+
+  mov ax, [es:di]
+  and ax, bx
+  or ax, dx
+  mov [es:di], ax
+  
+  { p^ := p^ and mask or color; }
+end;
+
 procedure GPTPixel(x, y: Word; color: TColor); far;
 var
   offset: Word;
@@ -158,17 +218,25 @@ begin
 end;
 
 var 
-  a, b, c, baseline, gpt: longint;
+  a, b, c, d, baseline, gpt: longint;
 begin
+{
   baseline := testfunc(nothing);
   a := testfunc(v1Pixel);
   b := testfunc(v2Pixel);
   c := testfunc(v3Pixel);
+  d := testfunc(v4Pixel);
   gpt := testfunc(GPTPixel);
 
   writeln('nothing: ', baseline);
   writeln('v1Pixel: ', a);
   writeln('v2Pixel: ', b);
   writeln('v3Pixel: ', c);
+  writeln('v4Pixel: ', d);
+}
+  gpt := testfunc(GPTPixel);
+  d := testfunc(v4Pixel);
+  
   writeln('GPTpixel: ', gpt);
+  writeln('v4Pixel: ', d);
 end.
