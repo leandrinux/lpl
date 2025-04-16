@@ -1,7 +1,7 @@
 {
-  unitname Unit
-
-  2022 LRT
+  unitname unit
+  
+  2025 LRT
 }
 unit
   unitname;
@@ -9,8 +9,11 @@ unit
 interface
 
   uses
-    consts, utils, uclasses, types, locale,
+    consts, utils, types, locale,
     uobject, uexc;
+
+  const
+    C_Something_CLASSNAME = 'TSomething';
 
   type
     PSomething = ^TSomething;
@@ -19,7 +22,6 @@ interface
       constructor init;
       destructor done; virtual;
       function getClassName: string; virtual;
-      function getClassId: word; virtual;
     private
     end;
 
@@ -39,12 +41,7 @@ implementation
 
   function TSomething.getClassName: string;
   begin
-    getClassName := 'TSomething';
-  end;
-
-  function TSomething.getClassId: word;
-  begin
-    getClassId := C_CLASS_ID_Something;
+    getClassName := C_Something_CLASSNAME;
   end;
 
   { TSomething private }
