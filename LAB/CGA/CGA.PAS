@@ -115,41 +115,41 @@ asm
   mov cx, ax
   and cx, $3  { cx = pixelOff }
 
-  { shloff := (3 - pixelOff) shl 1; }
+  { bitShift := (3 - pixelOff) shl 1; }
   mov ax, 3
   sub ax, cx
-  shl ax, 1   { ax = shloff }
+  shl ax, 1   { ax = bitShift }
 
   { if boolean(y and 1) then p := ptr($BA00, byteNro) else p := ptr($B800, byteNro); }
   mov bx, y
   and bx, 1
   jnz is_even
-  mov bx, $BA00
+  mov bx, $B800
   jmp mask
 
   is_even:
-  mov bx, $B800  
+  mov bx, $BA00  
 
   mask:
   mov es, bx     { es = $BA00 or $B800}
 
-  { mask := not (3 shl shloff); }
+  { mask := not (3 shl bitShift); }
   mov bx, 3
   mov cl, al 
-  shl bx, cl { bx = mask }
+  shl bx, cl
+  not bx     { bx = mask }
 
-  { color := (byte(c) shl shloff) ; }
-  xor dh, dh
+  { color := (byte(c) shl bitShift) ; }
+  xor dx, dx
   mov dl, color
   mov cl, al
   shl dx, cl { dx = color}
 
+  { p^ := p^ and mask or color; }
   mov ax, [es:di]
   and ax, bx
   or ax, dx
   mov [es:di], ax
-  
-  { p^ := p^ and mask or color; }
 end;
 
 procedure GPTPixel(x, y: Word; color: TColor); far;
@@ -234,9 +234,9 @@ begin
   writeln('v3Pixel: ', c);
   writeln('v4Pixel: ', d);
 }
-  gpt := testfunc(GPTPixel);
+  {gpt := testfunc(GPTPixel);}
   d := testfunc(v4Pixel);
-  
-  writeln('GPTpixel: ', gpt);
+
+  {writeln('GPTpixel: ', gpt);}
   writeln('v4Pixel: ', d);
 end.
