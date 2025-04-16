@@ -1,6 +1,6 @@
 {
   udisplay unit
-  Device used to display graphics on screen
+  Bitmap device used to display graphics on screen
   2025 LRT
 }
 unit
@@ -10,7 +10,7 @@ interface
 
   uses
     consts, utils, types, locale,
-    uobject, uexc, uviddrv, ucgadrv, uvgadrv;
+    uobject, uexc, ubitmap, uviddrv, ucgadrv, uvgadrv;
 
   const
     C_VideoDisplay_CLASSNAME = 'TVideoDisplay';
@@ -22,7 +22,7 @@ interface
     );
 
     PVideoDisplay = ^TVideoDisplay;
-    TVideoDisplay = object (TObject)
+    TVideoDisplay = object (TBitmap)
     public
       constructor init;
       constructor initWithDriver(driver: EVideoDriver);
