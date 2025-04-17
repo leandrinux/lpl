@@ -11,10 +11,15 @@ begin
   w := bitmap^.getWidth;
   h := bitmap^.getHeight;
   randomize;
-  for i:=1 to 100 do
+  for i:=1 to 200 do
   begin
     canvas^.setStrokeColor(random(bitmap^.getColorCount));
     canvas^.rect(random(w), random(h), random(100), random(100));
+  end;
+  for i:=1 to 200 do
+  begin
+    canvas^.setStrokeColor(random(bitmap^.getColorCount));
+    canvas^.circle(random(w), random(h), random(100));
   end;
   canvas^.release;
 end;
