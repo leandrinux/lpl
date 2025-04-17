@@ -28,6 +28,7 @@ interface
       procedure vline(y1, y2, x: word);
       procedure rect(x, y, width, height: word);
       procedure circle(x, y, radius: word);
+      procedure line(x1, y1, x2, y2: integer);
       function getClassName: string; virtual;
     private
       _bitmap: PBitmap;
@@ -72,13 +73,13 @@ implementation
   procedure TCanvas.hline(x1, x2, y: word);
   var x: word;
   begin
-    for x := x2 downto x1 do setPixel(x, y, _strokeColor);
+    for x := x2 downto x1 do _bitmap^.setPixel(x, y, _strokeColor);
   end;
 
   procedure TCanvas.vline(y1, y2, x: word);
   var y: word;
   begin
-    for y := y2 downto y1 do setPixel(x, y, _strokeColor);
+    for y := y2 downto y1 do _bitmap^.setPixel(x, y, _strokeColor);
   end;
 
   procedure TCanvas.rect(x, y, width, height: word);
@@ -86,13 +87,13 @@ implementation
   begin
     for i := x + width - 1 downto x do
     begin
-      setPixel(i, y, _strokeColor);
-      setPixel(i, y+height-1, _strokeColor);
+      _bitmap^.setPixel(i, y, _strokeColor);
+      _bitmap^.setPixel(i, y+height-1, _strokeColor);
     end;
     for i := y + height - 1 downto y do
     begin
-      setPixel(x, i, _strokeColor);
-      setPixel(x+width-1, i, _strokeColor);
+      _bitmap^.setPixel(x, i, _strokeColor);
+      _bitmap^.setPixel(x+width-1, i, _strokeColor);
     end;
   end;
 
@@ -100,16 +101,16 @@ implementation
   var
     px, py, d: integer;
     dE, dSE: integer;
-  begin
+  begin    
     px := 0;
     py := radius;
     d := 1 - radius;
     dE := 3;
     dSE := -(radius shl 1) + 5;
-    setPixel(x, y-py, _strokeColor);
-    setPixel(x, y+py, _strokeColor);
-    setPixel(x+py, y-px, _strokeColor);
-    setPixel(x-py, y+px, _strokeColor);
+    _bitmap^.setPixel(x, y-py, _strokeColor);
+    _bitmap^.setPixel(x, y+py, _strokeColor);
+    _bitmap^.setPixel(x+py, y-px, _strokeColor);
+    _bitmap^.setPixel(x-py, y+px, _strokeColor);
     while py>px do
     begin
       if d<0 then
@@ -126,15 +127,60 @@ implementation
         px := px + 1;
         py := py - 1;
       end;
-      setPixel(x+px, y-py, _strokeColor);
-      setPixel(x-px, y+py, _strokeColor);
-      setPixel(x-px, y-py, _strokeColor);
-      setPixel(x+px, y+py, _strokeColor);
-      setPixel(x+py, y-px, _strokeColor);
-      setPixel(x-py, y+px, _strokeColor);
-      setPixel(x-py, y-px, _strokeColor);
-      setPixel(x+py, y+px, _strokeColor);
+      _bitmap^.setPixel(x+px, y-py, _strokeColor);
+      _bitmap^.setPixel(x-px, y+py, _strokeColor);
+      _bitmap^.setPixel(x-px, y-py, _strokeColor);
+      _bitmap^.setPixel(x+px, y+py, _strokeColor);
+      _bitmap^.setPixel(x+py, y-px, _strokeColor);
+      _bitmap^.setPixel(x-py, y+px, _strokeColor);
+      _bitmap^.setPixel(x-py, y-px, _strokeColor);
+      _bitmap^.setPixel(x+py, y+px, _strokeColor);
     end;
+  end;
+
+  procedure TCanvas.line(x1, y1, x2, y2: integer);
+
+    function sign(a:integer): integer;
+    begin
+      if a>0 then sign:=+1 else if a<0 then sign:=-1 else sign:=0;
+    end;
+
+  var
+    d1x, d1y, d2x, d2y: integer;
+    u, v, m, n, s, i: integer;
+
+  begin
+     u:= x2 - x1;
+     v:= y2 - y1;
+     d1x:= sign(u);
+     d1y:= sign(v);
+     d2x:= sign(u);
+     d2y:= 0;
+     m := abs(u);
+     n := abs(v);
+     if not (m>n) then
+     begin
+       d2x := 0 ;
+       d2y := sign(v);
+       m := abs(v);
+       n := abs(u);
+     end;
+     s := m shr 1;
+     for i := 0 to m do
+     begin
+       _bitmap^.setPixel(x1, y1, _strokeColor);
+       s := s + n;
+       if not (s<m) then
+       begin
+         s := s - m;
+         x1 := x1 + round(d1x);
+         y1 := y1 + round(d1y);
+       end else
+       begin
+         x1 := x1 + round(d2x);
+         y1 := y1 + round(d2y);
+       end;
+     end;
   end;
 
   function TCanvas.getClassName: string;

@@ -21,6 +21,11 @@ begin
     canvas^.setStrokeColor(random(bitmap^.getColorCount));
     canvas^.circle(random(w), random(h), random(100));
   end;
+  for i:=1 to 200 do
+  begin
+    canvas^.setStrokeColor(random(bitmap^.getColorCount));
+    canvas^.line(random(w), random(h), random(w), random(h));
+  end;
   canvas^.release;
 end;
 
@@ -31,7 +36,6 @@ begin
   display := new(PVideoDisplay, initWithDriver(driver));
   display^.start;
   draw(display);
-  readkey;
   display^.stop;
   display^.release;
 end;
