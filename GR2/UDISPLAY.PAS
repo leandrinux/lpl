@@ -24,12 +24,17 @@ interface
     PVideoDisplay = ^TVideoDisplay;
     TVideoDisplay = object (TBitmap)
     public
-      constructor init;
       constructor initWithDriver(driver: EVideoDriver);
       destructor done; virtual;
       procedure setDriver(driver: EVideoDriver);
       procedure start;
       procedure stop;
+
+      function getWidth: word; virtual;
+      function getHeight: word; virtual;
+      function getColorCount: longint; virtual;
+      procedure setPixel(x, y: word; color: TColor); virtual;
+
       function getClassName: string; virtual;
     private
       _driver: PVideoDriver;
@@ -38,12 +43,6 @@ interface
 implementation
 
   { TVideoDisplay public }
-
-  constructor TVideoDisplay.init;
-  begin
-    inherited init;
-    _driver := nil;
-  end;
 
   constructor TVideoDisplay.initWithDriver(driver: EVideoDriver);
   begin
@@ -67,14 +66,32 @@ implementation
 
   procedure TVideoDisplay.start;
   begin
-    if _driver = nil then exit;
     _driver^.start;
   end;
 
   procedure TVideoDisplay.stop;
   begin
-    if _driver = nil then exit;
     _driver^.stop;
+  end;
+
+  function TVideoDisplay.getWidth: word;
+  begin
+    getWidth := _driver^.getWidth;
+  end;
+
+  function TVideoDisplay.getHeight: word;
+  begin
+    getHeight := _driver^.getHeight;
+  end;
+
+  function TVideoDisplay.getColorCount: longint;
+  begin
+    getColorCount := _driver^.getColorCount;
+  end;
+
+  procedure TVideoDisplay.setPixel(x, y: word; color: TColor);
+  begin
+    _driver^.putPixel(x, y, color);
   end;
 
   function TVideoDisplay.getClassName: string;

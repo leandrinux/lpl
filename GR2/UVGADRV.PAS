@@ -23,6 +23,7 @@ interface
       destructor done; virtual;
       function getWidth: word; virtual;
       function getHeight: word; virtual;
+      function getColorCount: longint; virtual;
       function detect: boolean; virtual;
       procedure start; virtual;
       procedure stop; virtual;
@@ -55,7 +56,12 @@ implementation
   begin
     getHeight := 200;
   end;
-  
+
+  function TVGAVideoDriver.getColorCount: longint;
+  begin
+    getColorCount := 256;
+  end;
+
   function TVGAVideoDriver.detect: boolean; 
   begin
     detect := true;

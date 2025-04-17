@@ -23,6 +23,7 @@ interface
       destructor done; virtual;
       function getWidth: word; virtual;
       function getHeight: word; virtual;
+      function getColorCount: longint; virtual;
       function detect: boolean; virtual;
       procedure start; virtual;
       procedure stop; virtual;
@@ -54,6 +55,11 @@ implementation
   function TVideoDriver.getHeight: word; 
   begin
     getHeight := 0;
+  end;
+
+  function TVideoDriver.getColorCount: longint;
+  begin
+    getColorCount := 0;
   end;
   
   function TVideoDriver.detect: boolean; 

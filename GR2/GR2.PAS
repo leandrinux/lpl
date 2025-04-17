@@ -5,6 +5,7 @@ uses
 
   ,ubitmap   { Abstract class representing bitmap graphics }
   ,udisplay  { Bitmap device used to display graphics on screen }
+  ,ucanvas   { Used to draw on a bitmap }
   ;
 
 begin
