@@ -5,6 +5,7 @@ interface
   procedure setGraphicsMode; 
   procedure setTextMode;
   procedure putPixel(x, y: word; color: byte);
+  function getPixel(x, y: word): byte;
 
 implementation
 
@@ -25,6 +26,11 @@ implementation
   procedure putPixel(x, y: word; color: byte);
   begin
     mem[$A000 : y shl 8 + y shl 6 + x] := color;    
+  end;
+
+  function getPixel(x, y: word): byte;
+  begin
+    getPixel := mem[$A000 : y shl 8 + y shl 6 + x];
   end;
 
 end.

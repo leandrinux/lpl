@@ -33,7 +33,7 @@ interface
       function getWidth: word; virtual;
       function getHeight: word; virtual;
       function getColorCount: longint; virtual;
-      procedure setPixel(x, y: word; color: TColor); virtual;
+      procedure setPixel(x, y: word; color: TColor8); virtual;
 
       function getClassName: string; virtual;
     private
@@ -89,7 +89,7 @@ implementation
     getColorCount := _driver^.getColorCount;
   end;
 
-  procedure TVideoDisplay.setPixel(x, y: word; color: TColor);
+  procedure TVideoDisplay.setPixel(x, y: word; color: TColor8);
   begin
     _driver^.putPixel(x, y, color);
   end;

@@ -23,7 +23,7 @@ begin
     bx := bx + bincx; if (bx <= 0) or (bx >= 319) then bincx := -bincx; 
     by := by + bincy; if (by <= 0) or (by >= 200) then bincy := -bincy; 
 
-    canvas^.setStrokeColor(random(4));
+    canvas^.setStrokeColor(random(display^.getColorCount));
     canvas^.line(ax, ay, bx, by);
     delay(10); 
   end;

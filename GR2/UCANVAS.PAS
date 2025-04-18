@@ -10,7 +10,7 @@ interface
 
   uses
     consts, utils, types, locale,
-    uobject, uexc, ubitmap;
+    uobject, uexc, ubitmap, ubitmap1;
 
   const
     C_Canvas_CLASSNAME = 'TCanvas';
@@ -21,19 +21,23 @@ interface
     public
       constructor initWithBitmap(bitmap: PBitmap);
       destructor done; virtual;
-      procedure setStrokeColor(color: TColor);
-      procedure setFillColor(color: TColor);
-      procedure setPixel(x, y: word; color: TColor);
+      procedure setStrokeColor(color: TColor8);
+      procedure setFillColor(color: TColor8);
+      procedure setPixel(x, y: word; color: TColor8);
       procedure hline(x1, x2, y: word);
       procedure vline(y1, y2, x: word);
       procedure rect(x, y, width, height: word);
+      procedure filledRect(x, y, width, height: word);
+      procedure grid(x, y, columns, rows, colWidth, rowHeight: word);      
+      procedure floodFill(x, y: word);
       procedure circle(x, y, radius: word);
       procedure line(x1, y1, x2, y2: integer);
+      procedure clear;
       function getClassName: string; virtual;
     private
       _bitmap: PBitmap;
-      _strokeColor: TColor;
-      _fillColor: TColor;
+      _strokeColor: TColor8;
+      _fillColor: TColor8;
     end;
 
 implementation
@@ -55,17 +59,17 @@ implementation
     inherited done;
   end;
 
-  procedure TCanvas.setStrokeColor(color: TColor);
+  procedure TCanvas.setStrokeColor(color: TColor8);
   begin
     _strokeColor := color;
   end;
 
-  procedure TCanvas.setFillColor(color: TColor);
+  procedure TCanvas.setFillColor(color: TColor8);
   begin
     _fillColor := color;
   end;
 
-  procedure TCanvas.setPixel(x, y: word; color: TColor);
+  procedure TCanvas.setPixel(x, y: word; color: TColor8);
   begin
     _bitmap^.setPixel(x, y, color);
   end;
@@ -95,6 +99,81 @@ implementation
       _bitmap^.setPixel(x, i, _strokeColor);
       _bitmap^.setPixel(x+width-1, i, _strokeColor);
     end;
+  end;
+
+  procedure TCanvas.filledRect(x, y, width, height: word);
+  begin
+  end;
+
+  procedure TCanvas.grid(x, y, columns, rows, colWidth, rowHeight: word);
+  var
+    w, h: word;
+    i: byte;
+  begin
+    w := (columns*colWidth) + columns;
+    h := (rows*rowHeight) + rows;
+    for i:=1 to rows-1 do
+      hline(x+1, x+w-2, y+i*(rowHeight+1));
+    for i:=1 to columns-1 do
+      vline(y+1, y+h-2, x+i*(colWidth+1));
+  end;
+
+  procedure TCanvas.floodFill(x, y: word);
+  var
+    mask: PBitmap;   { the control mask of painted pixels }
+    base: TColor8;    { the color that will be replaced by the flood fill }
+    w, h: word;      { size of the bitmap in pixels }
+    bw, bh: word;    { size of the bitmap in blocks }
+      procedure fillBlock(x, y: word);
+      var
+        bx, by: word; { coordinates of the current block }
+        x1, y1, x2, y2: word; { bounds of the current block }
+        i: word; { needed to iterate over borders }
+        procedure fillPixel(x, y: word);
+        begin
+          if (mask^.getPixel(x,y)>0) or (x<x1) or (x>x2) or (y<y1) or (y>y2) then exit;
+          setPixel(x, y, _fillColor);
+          mask^.setPixel(x, y, 1);
+          if _bitmap^.getPixel(x+1, y) = base then fillPixel(x+1, y);
+          if _bitmap^.getPixel(x-1, y) = base then fillPixel(x-1, y);
+          if _bitmap^.getPixel(x, y+1) = base then fillPixel(x, y+1);
+          if _bitmap^.getPixel(x, y-1) = base then fillPixel(x, y-1);
+        end;
+      begin
+        bx := x shr 4;
+        by := y shr 4;
+        x1 := bx shl 4;
+        y1 := by shl 4;
+        x2 := x1 + 15;
+        y2 := y1 + 15;
+        fillPixel(x, y);
+        if (bx>0) then
+          for i := y2 downto y1 do
+            if (mask^.getPixel(x1, i) > 0) and (_bitmap^.getPixel(x1-1, i) = base) then
+              fillBlock(x1-1, i);
+        if (bx<bw) then
+          for i := y2 downto y1 do
+            if (mask^.getPixel(x2, i) > 0) and (_bitmap^.getPixel(x2+1, i) = base) then
+              fillBlock(x2+1, i);
+        if (by>0) then
+          for i := x2 downto x1 do
+            if (mask^.getPixel(i, y1) > 0) and (_bitmap^.getPixel(i, y1-1) = base) then
+              fillBlock(i, y1-1);
+        if (by<bh) then
+          for i := x2 downto x1 do
+            if (mask^.getPixel(i, y2) > 0) and (_bitmap^.getPixel(i, y2+1) = base) then
+              fillBlock(i, y2+1);
+      end;
+  begin
+    base := _bitmap^.getPixel(x, y);
+    if base = _fillColor then exit;
+    w := _bitmap^.getWidth;
+    h := _bitmap^.getHeight;
+    bw := w shr 4;
+    bh := h shr 4;
+    mask := new(PBitmap1, initWithSize(w, h));
+    fillBlock(x, y);
+    mask^.release;
   end;
 
   procedure TCanvas.circle(x, y, radius: word);
@@ -181,6 +260,11 @@ implementation
          y1 := y1 + round(d2y);
        end;
      end;
+  end;
+
+  procedure TCanvas.clear;
+  begin
+    _bitmap^.clear(_fillColor);
   end;
 
   function TCanvas.getClassName: string;

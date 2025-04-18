@@ -5,6 +5,7 @@ interface
   procedure setGraphicsMode; 
   procedure setTextMode;
   procedure putPixel(x, y: word; color: byte);
+  function getPixel(x, y: word): byte;
 
 implementation
 
@@ -81,5 +82,25 @@ implementation
     or ax, dx
     mov [es:di], ax
   end;
+
+  function getPixel(x, y: word): byte;
+  var
+    pixelNro: word;
+    byteNro: word;
+    pixelOff: word;
+    base: word;
+    value: byte;
+    mask: byte;
+    shloff: byte;
+    p: ^byte;
+  begin
+    pixelNro := (y shr 1) shl 8 + (y shr 1) shl 6 + x;
+    byteNro := pixelNro shr 2;    
+    if boolean(y and 1) then p := ptr($BA00, byteNro) else p := ptr($B800, byteNro);
+    pixelOff := pixelNro and $3;   
+    shloff := (3 - pixelOff) shl 1;
+    mask := 3 shl shloff;
+    getPixel := p^ and mask shr shloff;
+  end;    
 
 end.

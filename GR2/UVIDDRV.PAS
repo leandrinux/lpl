@@ -29,6 +29,7 @@ interface
       procedure stop; virtual;
       procedure clear(color: byte); virtual;
       procedure putPixel(x, y: word; color: byte); virtual;
+      function getPixel(x, y: word): byte; virtual;
       function getClassName: string; virtual;
     private
     end;
@@ -80,6 +81,10 @@ implementation
   end;
   
   procedure TVideoDriver.putPixel(x, y: word; color: byte);
+  begin
+  end;  
+
+  function TVideoDriver.getPixel(x, y: word): byte;
   begin
   end;  
 

@@ -69,7 +69,9 @@ interface
     ESerialPort = (COM1, COM2, COM3, COM4);
 
     { colors are defined as 32-bit integers }
-    TColor = longint;
+    TColor8 = byte;
+    TColor16 = word;
+    TColor32 = longint;
 
     { a full path to a file, such as C:\WINDOWS\NOTEPAD.EXE or /dev/urandom }
     TFilePath = string;

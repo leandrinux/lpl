@@ -29,6 +29,7 @@ interface
       procedure stop; virtual;
       procedure clear(color: byte); virtual;
       procedure putPixel(x, y: word; color: byte); virtual;
+      function getPixel(x, y: word): byte; virtual;
       function getClassName: string; virtual;
     private
     end;
@@ -86,6 +87,12 @@ implementation
     if (x>319) or (y>199) then exit;
     _vga.putpixel(x, y, color);
   end;  
+
+  function TVGAVideoDriver.getPixel(x, y: word): byte;
+  begin
+    if (x>319) or (y>199) then exit;
+    getPixel := _vga.getPixel(x, y);
+  end;
 
   function TVGAVideoDriver.getClassName: string;
   begin

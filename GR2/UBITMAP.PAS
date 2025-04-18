@@ -19,23 +19,28 @@ interface
     PBitmap = ^TBitmap;
     TBitmap = object (TObject)
     public
-      constructor init;
+      constructor initWithSize(width, height: word);
       destructor done; virtual;
       function getWidth: word; virtual;
       function getHeight: word; virtual;
       function getColorCount: longint; virtual;
-      procedure setPixel(x, y: word; color: TColor); virtual;
+      procedure setPixel(x, y: word; color: TColor8); virtual;
+      function getPixel(x, y: word): TColor8; virtual;
+      procedure clear(color: TColor8); virtual;
       function getClassName: string; virtual;
     private
+      _width, _height: word;
     end;
 
 implementation
 
   { TBitmap }
 
-  constructor TBitmap.init;
+  constructor TBitmap.initWithSize(width, height: word);
   begin
     inherited init;
+    _width := width;
+    _height := height;
   end;
 
   destructor TBitmap.done;
@@ -58,7 +63,15 @@ implementation
     getColorCount := 0;
   end;
 
-  procedure TBitmap.setPixel(x, y: word; color: TColor);
+  procedure TBitmap.setPixel(x, y: word; color: TColor8);
+  begin
+  end;
+
+  function TBitmap.getPixel(x, y: word): TColor8;
+  begin
+  end;
+
+  procedure TBitmap.clear(color: TColor8);
   begin
   end;
 
