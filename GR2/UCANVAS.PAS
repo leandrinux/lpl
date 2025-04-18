@@ -33,6 +33,9 @@ interface
       procedure circle(x, y, radius: word);
       procedure line(x1, y1, x2, y2: integer);
       procedure clear;
+      function getBitmap: PBitmap;
+      function getStrokeColor: TColor8;
+      function getFillColor: TColor8;
       function getClassName: string; virtual;
     private
       _bitmap: PBitmap;
@@ -102,7 +105,12 @@ implementation
   end;
 
   procedure TCanvas.filledRect(x, y, width, height: word);
+  var px, py: word;
   begin
+    rect(x, y, width, height);
+    for px := x + width - 2 downto x+1 do
+      for py := y + height - 2 downto y+1 do
+        setPixel(px, py, _fillColor);
   end;
 
   procedure TCanvas.grid(x, y, columns, rows, colWidth, rowHeight: word);
@@ -265,6 +273,21 @@ implementation
   procedure TCanvas.clear;
   begin
     _bitmap^.clear(_fillColor);
+  end;
+
+  function TCanvas.getBitmap: PBitmap;
+  begin
+    getBitmap := _bitmap;
+  end;
+
+  function TCanvas.getStrokeColor: TColor8;
+  begin
+    getStrokeColor := _strokeColor;
+  end;
+
+  function TCanvas.getFillColor: TColor8;
+  begin
+    getFillColor := _fillColor;
   end;
 
   function TCanvas.getClassName: string;

@@ -8,6 +8,11 @@ uses
   ,ubitmap8  { An 8-bit indexed color implementation of a bitmap }
   ,udisplay  { Bitmap device used to display graphics on screen }
   ,ucanvas   { Used to draw on a bitmap }
+
+  ,ufont     { Abstract class representing graphic fonts used to write text to a canvas }
+  ,utfont    { A 1KB font that uses 32 bit ints for each glyph }
+  ,usysfont  { The default graphic font. }
+  ,utrender  { Text renderer unit, used to draw text to a canvas. }
   ;
 
 begin
