@@ -11,7 +11,7 @@ interface
 
   uses
     consts, utils, types, locale, ascii, math,
-    uexc, uobject, ubitmap, ufont, utfont, usysfont, ucanvas;
+    uexc, uobject, ubitmap, ufont, utfont, ucanvas;
 
   type
     PTextRenderer = ^TTextRenderer;

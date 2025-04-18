@@ -11,7 +11,7 @@ uses
 
   ,ufont     { Abstract class representing graphic fonts used to write text to a canvas }
   ,utfont    { A 1KB font that uses 32 bit ints for each glyph }
-  ,usysfont  { The default graphic font. }
+  ,ufcatusm  { Catus Mono font }
   ,utrender  { Text renderer unit, used to draw text to a canvas. }
   ;
 

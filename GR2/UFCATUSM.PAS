@@ -1,12 +1,12 @@
 {
   usysfont Unit
-  The default graphic font. 
+  Catus Mono font
   No loading or saving to file required, it resides fully in memory and it can simply be used by 
   importing this unit. It doesn't even need the full KB!
   2022 LRT
 }
 unit
-  usysfont;
+  ufcatusm;
 
 interface
 
@@ -14,12 +14,12 @@ interface
     utfont;
 
   var
-    SystemFont: PTinyFont;
+    CatusMono: PTinyFont;
 
 implementation
 
   const
-    C_SYSTEM_FONT_NAME = 'Catus';
+    C_SYSTEM_FONT_NAME = 'Catus Mono';
 
     C_SYSTEM_FONT_CHARS: array [0..127] of longint = (
       $02811700, $0280E880, $0281F000, $239C4010,
@@ -57,6 +57,6 @@ implementation
     );
 
 begin
-  SystemFont := new(PTinyFont, initWithData(#0, #127, @C_SYSTEM_FONT_CHARS));
-  SystemFont^.setName(C_SYSTEM_FONT_NAME);
+  CatusMono := new(PTinyFont, initWithData(#0, #127, @C_SYSTEM_FONT_CHARS));
+  CatusMono^.setName(C_SYSTEM_FONT_NAME);
 end.
