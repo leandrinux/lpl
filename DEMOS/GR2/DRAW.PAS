@@ -42,5 +42,6 @@ end;
 
 begin
   runDemoWithDriver(EVideoDriverCGA);
+  runDemoWithDriver(EVideoDriverEGA);
   runDemoWithDriver(EVideoDriverVGA);
 end.

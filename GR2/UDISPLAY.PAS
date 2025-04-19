@@ -10,7 +10,7 @@ interface
 
   uses
     consts, utils, types, locale,
-    uobject, uexc, ubitmap, uviddrv, ucgadrv, uvgadrv;
+    uobject, uexc, ubitmap, uviddrv, ucgadrv, uegadrv, uvgadrv;
 
   const
     C_VideoDisplay_CLASSNAME = 'TVideoDisplay';
@@ -18,6 +18,7 @@ interface
   type
     EVideoDriver = (
       EVideoDriverCGA,
+      EVideoDriverEGA,
       EVideoDriverVGA
     );
 
@@ -60,6 +61,7 @@ implementation
   begin
     case driver of 
       EVideoDriverCGA: _driver := new(PCGAVideoDriver, init);
+      EVideoDriverEGA: _driver := new(PEGAVideoDriver, init);
       EVideoDriverVGA: _driver := new(PVGAVideoDriver, init);
     end;
   end;

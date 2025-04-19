@@ -89,7 +89,6 @@ implementation
     byteNro: word;
     pixelOff: word;
     base: word;
-    value: byte;
     mask: byte;
     shloff: byte;
     p: ^byte;
