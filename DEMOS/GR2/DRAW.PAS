@@ -8,8 +8,8 @@ var
   w, h: word;
 begin
   canvas := new(PCanvas, initWithBitmap(bitmap));
-  w := 640; bitmap^.getWidth;
-  h := 350; bitmap^.getHeight;
+  w := bitmap^.getWidth;
+  h := bitmap^.getHeight;
   randomize;
   for i:=1 to 200 do
   begin
@@ -45,4 +45,5 @@ begin
   runDemoWithDriver(EVideoDriverEGA, 0);
   runDemoWithDriver(EVideoDriverEGA, 1);
   runDemoWithDriver(EVideoDriverVGA, 0);
+  runDemoWithDriver(EVideoDriverVGA, 1);
 end.

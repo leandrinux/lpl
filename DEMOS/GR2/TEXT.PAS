@@ -7,7 +7,7 @@ var
   tr: PTextRenderer;
 
 begin
-  display := new(PVideoDisplay, initWithDriver(EVideoDriverEGA));
+  display := new(PVideoDisplay, initWithDriver(EVideoDriverVGA));
   display^.start(1);
   canvas := new(PCanvas, initWithBitmap(display));
   tr := new(PTextRenderer, init);
