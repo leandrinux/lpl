@@ -12,6 +12,6 @@ tpc -B core\core.pas -Ucore -Ebin
 rem tpc -B gr\gr.pas -Ugr -Ebin
 tpc -B gr2\gr2.pas -Ugr2 -Ebin
 
-del bin\*.exe
+rem del bin\*.exe
 
 config -set "cpu cycles=3000"

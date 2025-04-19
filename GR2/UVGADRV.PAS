@@ -9,7 +9,7 @@ unit
 interface
 
   uses
-    consts, utils, types, locale, _vga, 
+    consts, utils, types, locale, 
     uobject, uexc, uviddrv;
 
   const
@@ -70,12 +70,20 @@ implementation
   
   procedure TVGAVideoDriver.start(mode: byte);
   begin
-    _vga.setGraphicsMode;
+    asm
+      mov ah, 0    { BIOS video function: set mode }
+      mov al, $13  { VGA 320x200 256-color mode }
+      int 10h      { BIOS video interrupt }
+    end;
   end;
   
   procedure TVGAVideoDriver.stop; 
   begin
-    _vga.setTextMode;
+    asm
+      mov ah, 0  { BIOS video function: set mode }
+      mov al, 3  { 80x25 16 color text (CGA,EGA,MCGA,VGA) }
+      int 10h    { BIOS video interrupt }
+    end;
   end;
   
   procedure TVGAVideoDriver.clear(color: byte);
@@ -85,13 +93,13 @@ implementation
   procedure TVGAVideoDriver.putPixel(x, y: word; color: byte);
   begin
     if (x>319) or (y>199) then exit;
-    _vga.putpixel(x, y, color);
+    mem[$A000 : y shl 8 + y shl 6 + x] := color;
   end;  
 
   function TVGAVideoDriver.getPixel(x, y: word): byte;
   begin
     if (x>319) or (y>199) then exit;
-    getPixel := _vga.getPixel(x, y);
+    getPixel := mem[$A000 : y shl 8 + y shl 6 + x];
   end;
 
   function TVGAVideoDriver.getClassName: string;

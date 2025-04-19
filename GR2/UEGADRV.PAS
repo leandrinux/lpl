@@ -37,6 +37,21 @@ interface
 
 implementation
 
+  type
+    TVideoMode = record
+      xres, yres: word;
+      colors: byte;
+      mode: byte;
+    end;
+
+  const
+    C_EGA_VIDEO_MODE_COUNT = 2;
+
+    C_EGA_VIDEO_MODES: array[0..C_EGA_VIDEO_MODE_COUNT-1] of TVideoMode = (
+      (xres:320; yres:200; colors:16; mode:$0D),
+      (xres:640; yres:350; colors:16; mode:$10)
+    );
+
   { TEGAVideoDriver public }
 
   constructor TEGAVideoDriver.init;
@@ -51,23 +66,17 @@ implementation
 
   function TEGAVideoDriver.getWidth: word;
   begin
-    case _mode of 
-      0: getWidth := 320;
-      1: getWidth := 640;
-    end;
+    getWidth := C_EGA_VIDEO_MODES[_mode].xres;
   end;
 
   function TEGAVideoDriver.getHeight: word; 
   begin
-    case _mode of 
-      0: getHeight := 200;
-      1: getHeight := 350;
-    end;
+    getHeight := C_EGA_VIDEO_MODES[_mode].yres;
   end;
   
   function TEGAVideoDriver.getColorCount: longint;
   begin
-    getColorCount := 16;
+    getColorCount := C_EGA_VIDEO_MODES[_mode].colors;
   end;
 
   function TEGAVideoDriver.detect: boolean; 
@@ -80,10 +89,7 @@ implementation
     EGAMode: byte;  
   begin
     _mode := mode;
-    case mode of
-      0: EGAMode := $0D; {320x200x16}
-      1: EGAMode := $10; {640x350x16}
-    end;
+    EGAMode := C_EGA_VIDEO_MODES[_mode].mode;
     asm
       mov ah, 0    { BIOS video function: set mode }
       mov al, EGAMode  
@@ -112,20 +118,17 @@ implementation
     bitMask: Byte;
     plane: Byte;
     oldVal: Byte;
+  var
+    w, h: word;
   begin
+    w := C_EGA_VIDEO_MODES[_mode].xres - 1;
+    h := C_EGA_VIDEO_MODES[_mode].yres - 1;
+    if (x>w) or (y>h) then exit;
+
     { Calculate byte offset in video memory (40 bytes per scanline) }
     case _mode of
-      0: 
-      begin
-        if (x>319) or (y>199) then exit;
-        byteOffset := y * 40 + (x shr 3);   { x div 8 }
-      end;
-
-      1:
-      begin
-        if (x>639) or (y>349) then exit;
-        byteOffset := y * 80 + (x shr 3);   { x div 8 }
-      end;
+      0: byteOffset := y * 40 + (x shr 3);   { x div 8 }
+      1: byteOffset := y * 80 + (x shr 3);   { x div 8 }
     end;
    
     { Calculate bit mask: pixel bit in byte }
@@ -158,11 +161,12 @@ implementation
   end;
 
   function TEGAVideoDriver.getPixel(x, y: word): byte;
+  var
+    w, h: word;
   begin
-    case _mode of
-      0: if (x>319) or (y>199) then exit;
-      1: if (x>639) or (y>349) then exit;
-    end;
+    w := C_EGA_VIDEO_MODES[_mode].xres - 1;
+    h := C_EGA_VIDEO_MODES[_mode].yres - 1;
+    if (x>w) or (y>h) then exit;
     getPixel := 0; 
   end;  
 
