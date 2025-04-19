@@ -39,6 +39,7 @@ interface
       function getClassName: string; virtual;
     private
       _driver: PVideoDriver;
+      _isStarted: boolean;
     end;
 
 implementation
@@ -48,11 +49,13 @@ implementation
   constructor TVideoDisplay.initWithDriver(driver: EVideoDriver);
   begin
     inherited init;
+    _isStarted := false;
     setDriver(driver);
   end;
 
   destructor TVideoDisplay.done;
   begin
+    if _isStarted then _driver^.stop;
     if _driver <> nil then _driver^.release;
     inherited done;
   end;
@@ -69,11 +72,13 @@ implementation
   procedure TVideoDisplay.start(mode: byte);
   begin
     _driver^.start(mode);
+    _isStarted := true;
   end;
 
   procedure TVideoDisplay.stop;
   begin
     _driver^.stop;
+    _isStarted := false;
   end;
 
   function TVideoDisplay.getWidth: word;
