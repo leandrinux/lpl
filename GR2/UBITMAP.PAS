@@ -24,6 +24,7 @@ interface
       function getWidth: word; virtual;
       function getHeight: word; virtual;
       function getColorCount: longint; virtual;
+      function getBitsPerPixel: byte; virtual;
       procedure setPixel(x, y: word; color: TColor8); virtual;
       function getPixel(x, y: word): TColor8; virtual;
       procedure clear(color: TColor8); virtual;
@@ -61,6 +62,11 @@ implementation
   function TBitmap.getColorCount: longint;
   begin
     getColorCount := 0;
+  end;
+
+  function TBitmap.getBitsPerPixel: byte;
+  begin
+    getBitsPerPixel := 0;
   end;
 
   procedure TBitmap.setPixel(x, y: word; color: TColor8);
