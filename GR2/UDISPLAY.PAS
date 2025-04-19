@@ -28,7 +28,7 @@ interface
       constructor initWithDriver(driver: EVideoDriver);
       destructor done; virtual;
       procedure setDriver(driver: EVideoDriver);
-      procedure start;
+      procedure start(mode: byte);
       procedure stop;
 
       function getWidth: word; virtual;
@@ -66,9 +66,9 @@ implementation
     end;
   end;
 
-  procedure TVideoDisplay.start;
+  procedure TVideoDisplay.start(mode: byte);
   begin
-    _driver^.start;
+    _driver^.start(mode);
   end;
 
   procedure TVideoDisplay.stop;

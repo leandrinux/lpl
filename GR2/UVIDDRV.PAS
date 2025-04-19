@@ -25,7 +25,7 @@ interface
       function getHeight: word; virtual;
       function getColorCount: longint; virtual;
       function detect: boolean; virtual;
-      procedure start; virtual;
+      procedure start(mode: byte); virtual;
       procedure stop; virtual;
       procedure clear(color: byte); virtual;
       procedure putPixel(x, y: word; color: byte); virtual;
@@ -68,7 +68,7 @@ implementation
     detect := false;
   end;
   
-  procedure TVideoDriver.start; 
+  procedure TVideoDriver.start(mode: byte);
   begin
   end;
   
