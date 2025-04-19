@@ -37,17 +37,10 @@ interface
 
 implementation
 
-  type
-    TVideoMode = record
-      xres, yres: word;
-      colors: byte;
-      mode: byte;
-    end;
-
   const
     C_EGA_VIDEO_MODE_COUNT = 2;
 
-    C_EGA_VIDEO_MODES: array[0..C_EGA_VIDEO_MODE_COUNT-1] of TVideoMode = (
+    C_EGA_VIDEO_MODES: array[0..C_EGA_VIDEO_MODE_COUNT-1] of TVideoModeInfo = (
       (xres:320; yres:200; colors:16; mode:$0D),
       (xres:640; yres:350; colors:16; mode:$10)
     );

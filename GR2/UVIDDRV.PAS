@@ -16,11 +16,20 @@ interface
     C_VideoDriver_CLASSNAME = 'TVideoDriver';
 
   type
+    PVideoModeInfo = ^TVideoMode;
+    TVideoModeInfo = record
+      xres, yres: word;
+      colors: word;
+      mode: byte;
+    end;
+
     PVideoDriver = ^TVideoDriver;
     TVideoDriver = object (TObject)
     public
       constructor init;
       destructor done; virtual;
+      function getVideoModeCount: byte;
+      function getVideoModeInfo(mode: byte): PVideoModeInfo;
       function getWidth: word; virtual;
       function getHeight: word; virtual;
       function getColorCount: longint; virtual;
@@ -46,6 +55,16 @@ implementation
   destructor TVideoDriver.done;
   begin
     inherited done;
+  end;
+
+  function TVideoDriver.getVideoModeCount: byte;
+  begin
+    getVideoModeCount := 0;
+  end;
+
+  function TVideoDriver.getVideoModeInfo(mode: byte): PVideoModeInfo;
+  begin
+    getVideoModeInfo := nil;
   end;
 
   function TVideoDriver.getWidth: word;

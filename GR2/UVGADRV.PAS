@@ -32,9 +32,17 @@ interface
       function getPixel(x, y: word): byte; virtual;
       function getClassName: string; virtual;
     private
+      _mode: byte;
     end;
 
 implementation
+
+  const
+    C_VGA_VIDEO_MODE_COUNT = 1;
+
+    C_VGA_VIDEO_MODES: array[0..C_VGA_VIDEO_MODE_COUNT-1] of TVideoModeInfo = (
+      (xres:320; yres:200; colors:256; mode:$13)
+    );  
 
   { TVGAVideoDriver public }
 
@@ -50,17 +58,17 @@ implementation
 
   function TVGAVideoDriver.getWidth: word;
   begin
-    getWidth := 320;
+    getWidth := C_VGA_VIDEO_MODES[_mode].xres;
   end;
 
   function TVGAVideoDriver.getHeight: word; 
   begin
-    getHeight := 200;
+    getHeight := C_VGA_VIDEO_MODES[_mode].yres;
   end;
-
+  
   function TVGAVideoDriver.getColorCount: longint;
   begin
-    getColorCount := 256;
+    getColorCount := C_VGA_VIDEO_MODES[_mode].colors;
   end;
 
   function TVGAVideoDriver.detect: boolean; 
@@ -69,10 +77,14 @@ implementation
   end;
   
   procedure TVGAVideoDriver.start(mode: byte);
+  var
+    VGAMode: byte;
   begin
+    _mode := mode;
+    VGAMode := C_VGA_VIDEO_MODES[mode].mode;
     asm
       mov ah, 0    { BIOS video function: set mode }
-      mov al, $13  { VGA 320x200 256-color mode }
+      mov al, VGAMode  { VGA 320x200 256-color mode }
       int 10h      { BIOS video interrupt }
     end;
   end;

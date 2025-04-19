@@ -21,6 +21,8 @@ interface
     public
       constructor init;
       destructor done; virtual;
+      function getVideoModeCount: byte;
+      function getVideoModeInfo(mode: byte): PVideoModeInfo;
       function getWidth: word; virtual;
       function getHeight: word; virtual;
       function getColorCount: longint; virtual;
@@ -32,11 +34,19 @@ interface
       function getPixel(x, y: word): byte; virtual;
       function getClassName: string; virtual;
     private
+      _mode: byte;
     end;
 
 implementation
 
   { TCGAVideoDriver public }
+
+  const
+    C_CGA_VIDEO_MODE_COUNT = 1;
+
+    C_CGA_VIDEO_MODES: array[0..C_CGA_VIDEO_MODE_COUNT-1] of TVideoModeInfo = (
+      (xres:320; yres:200; colors:4; mode:$05)
+    );  
 
   constructor TCGAVideoDriver.init;
   begin
@@ -48,19 +58,29 @@ implementation
     inherited done;
   end;
 
+  function TCGAVideoDriver.getVideoModeCount: byte;
+  begin
+    getVideoModeCount := 0;
+  end;
+
+  function TCGAVideoDriver.getVideoModeInfo(mode: byte): PVideoModeInfo;
+  begin
+    getVideoModeInfo := @C_CGA_VIDEO_MODES[mode];
+  end;
+
   function TCGAVideoDriver.getWidth: word;
   begin
-    getWidth := 320;
+    getWidth := C_CGA_VIDEO_MODES[_mode].xres;
   end;
 
   function TCGAVideoDriver.getHeight: word; 
   begin
-    getHeight := 200;
+    getHeight := C_CGA_VIDEO_MODES[_mode].yres;
   end;
   
   function TCGAVideoDriver.getColorCount: longint;
   begin
-    getColorCount := 4;
+    getColorCount := C_CGA_VIDEO_MODES[_mode].colors;
   end;
 
   function TCGAVideoDriver.detect: boolean; 
@@ -69,10 +89,14 @@ implementation
   end;
   
   procedure TCGAVideoDriver.start(mode: byte);
+  var
+    CGAMode: byte;
   begin
+    _mode := mode;
+    CGAMode := C_CGA_VIDEO_MODES[_mode].mode;
     asm
       mov ah, 0    { BIOS video function: set mode }
-      mov al, 5    { CGA 320x200 4-color mode }
+      mov al, CGAMode
       int 10h      { BIOS video interrupt }
     end;
   end;
