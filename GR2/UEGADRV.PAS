@@ -81,6 +81,7 @@ implementation
   var 
     EGAMode: byte;  
   begin
+    if mode >= C_EGA_VIDEO_MODE_COUNT then exit;
     _mode := mode;
     EGAMode := C_EGA_VIDEO_MODES[_mode].mode;
     asm

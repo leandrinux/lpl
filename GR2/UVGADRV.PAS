@@ -122,6 +122,7 @@ implementation
   var
     VGAMode: byte;
   begin
+    if mode >= C_VGA_VIDEO_MODE_COUNT then exit;
     _mode := mode;
     VGAMode := C_VGA_VIDEO_MODES[mode].mode;
     asm

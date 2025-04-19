@@ -92,6 +92,7 @@ implementation
   var
     CGAMode: byte;
   begin
+    if mode >= C_CGA_VIDEO_MODE_COUNT then exit;
     _mode := mode;
     CGAMode := C_CGA_VIDEO_MODES[_mode].mode;
     asm

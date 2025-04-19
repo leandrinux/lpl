@@ -35,7 +35,7 @@ interface
       function getHeight: word; virtual;
       function getColorCount: longint; virtual;
       procedure setPixel(x, y: word; color: TColor8); virtual;
-
+      procedure clear(color: TColor8); virtual;
       function getClassName: string; virtual;
     private
       _driver: PVideoDriver;
@@ -95,7 +95,11 @@ implementation
   begin
     _driver^.putPixel(x, y, color);
   end;
-
+  
+  procedure TVideoDisplay.clear(color: TColor8);
+  begin
+  end;
+  
   function TVideoDisplay.getClassName: string;
   begin
     getClassName := C_VideoDisplay_CLASSNAME;
