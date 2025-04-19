@@ -9,7 +9,6 @@ tpc -B base\base.pas -Ubase -Ebin
 tpc -B debug\debug.pas -Udebug -Ebin
 tpc -B dos\dos.pas -Udos -Ebin
 tpc -B core\core.pas -Ucore -Ebin
-rem tpc -B gr\gr.pas -Ugr -Ebin
 tpc -B gr2\gr2.pas -Ugr2 -Ebin
 
 del bin\*.exe
