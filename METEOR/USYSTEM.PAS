@@ -17,12 +17,28 @@ interface
     C_System_CLASSNAME = 'TSystem';
 
   type
+    TSystemConfig = record
+      displayDriver: EVideoDriver;
+      displayMode: byte;
+      mouseSupport: boolean;
+    end;
+
+  const
+    C_DEFAULT_SYSTEM_CONFIG : TSystemConfig = (
+      displayDriver: EVideoDriverVGA;
+      displayMode: 0;
+      mouseSupport: true
+    );
+
+  type
+
     PSystem = ^TSystem;
     TSystem = object (TObject)
     public
       constructor init;
       destructor done; virtual;
       procedure start;
+      procedure startWithConfig(const config: TSystemConfig);
       procedure load(process: PProcess);
       procedure receiveMessage(msg: PObjectMessage); virtual;
       function getClassName: string; virtual;
@@ -48,14 +64,12 @@ implementation
     _runningList := new(PList, init);
     _bus := new(PMessageBus, init);
     _bus^.subscribe(@self);
-    _display := new(PVideoDisplay, initWithDriver(EVideoDriverEGA));
     Keyboard^.setDelegate(_bus);   { send keyboard messages to the message bus }
     Mouse^.setDelegate(_bus);      { send mouse messages to the message bus }
   end;
 
   destructor TSystem.done;
   begin
-    _display^.release;
     _bus^.unsubscribe(@self);
     _bus^.release;
     _pendingList^.release;
@@ -65,12 +79,19 @@ implementation
 
   procedure TSystem.start;
   begin
+    startWithConfig(C_DEFAULT_SYSTEM_CONFIG);
+  end;
+
+  procedure TSystem.startWithConfig(const config: TSystemConfig);
+  begin
     _running := true;
-    (*
-    _display^.start(0);            { start the graphics mode }
-    *)
-    Mouse^.reset;                  { prepare the mouse after changing video mode }
-    Mouse^.show;                   { show the mouse cursor }
+    _display := new(PVideoDisplay, initWithDriver(config.displayDriver));
+    _display^.start(config.displayMode); { start the graphics mode }
+    if config.mouseSupport then
+    begin
+      Mouse^.reset;                  { prepare the mouse after changing video mode }
+      Mouse^.show;                   { show the mouse cursor }
+    end;
     while _running do
     begin
       Mouse^.update;               { update mouse status }
@@ -79,10 +100,9 @@ implementation
       executeRunningProcesses;
     end;
     killRunningProcesses;
-    Mouse^.hide;                   { hide the mouse cursor }
-    (*
+    if config.mouseSupport then Mouse^.hide; { hide the mouse cursor }
     _display^.stop;                 { stops the graphics mode }
-    *)
+    _display^.release;
   end;
 
   procedure TSystem.load(process: PProcess);
