@@ -29,6 +29,7 @@ interface
       procedure stop; virtual;
       procedure clear(color: byte); virtual;
       procedure putPixel(x, y: word; color: byte); virtual;
+      procedure setBlock(x, y, width, height: word; color: TColor8); virtual;
       function getPixel(x, y: word): byte; virtual;
       function getClassName: string; virtual;
     private
@@ -159,6 +160,10 @@ implementation
       putPlanarPixel(x, y, color);
     end;
   end;  
+
+  procedure TVGAVideoDriver.setBlock(x, y, width, height: word; color: TColor8);
+  begin
+  end;
 
   function TVGAVideoDriver.getPixel(x, y: word): byte;
   var

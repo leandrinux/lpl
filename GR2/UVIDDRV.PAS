@@ -38,6 +38,7 @@ interface
       procedure stop; virtual;
       procedure clear(color: byte); virtual;
       procedure putPixel(x, y: word; color: byte); virtual;
+      procedure setBlock(x, y, width, height: word; color: TColor8); virtual;
       function getPixel(x, y: word): byte; virtual;
       function getClassName: string; virtual;
     private
@@ -102,6 +103,14 @@ implementation
   procedure TVideoDriver.putPixel(x, y: word; color: byte);
   begin
   end;  
+
+  procedure TVideoDriver.setBlock(x, y, width, height: word; color: TColor8);
+  var px, py: word;
+  begin
+    for px := x + width - 1 downto x do
+      for py := y + height - 1 downto y do
+        putPixel(px, py, color);
+  end;
 
   function TVideoDriver.getPixel(x, y: word): byte;
   begin

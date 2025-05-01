@@ -26,6 +26,7 @@ interface
       function getColorCount: longint; virtual;
       function getBitsPerPixel: byte; virtual;
       procedure setPixel(x, y: word; color: TColor8); virtual;
+      procedure setBlock(x, y, width, height: word; color: TColor8); virtual;
       function getPixel(x, y: word): TColor8; virtual;
       procedure clear(color: TColor8); virtual;
       function getClassName: string; virtual;
@@ -71,6 +72,14 @@ implementation
 
   procedure TBitmap.setPixel(x, y: word; color: TColor8);
   begin
+  end;
+
+  procedure TBitmap.setBlock(x, y, width, height: word; color: TColor8);
+  var px, py: word;
+  begin
+    for px := x + width - 1 downto x do
+      for py := y + height - 1 downto y do
+        setPixel(px, py, color);
   end;
 
   function TBitmap.getPixel(x, y: word): TColor8;

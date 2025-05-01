@@ -105,12 +105,8 @@ implementation
   end;
 
   procedure TCanvas.filledRect(x, y, width, height: word);
-  var px, py: word;
   begin
-    rect(x, y, width, height);
-    for px := x + width - 2 downto x+1 do
-      for py := y + height - 2 downto y+1 do
-        setPixel(px, py, _fillColor);
+    _bitmap^.setBlock(x, y, width, height, _fillColor);
   end;
 
   procedure TCanvas.grid(x, y, columns, rows, colWidth, rowHeight: word);

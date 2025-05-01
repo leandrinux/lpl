@@ -16,6 +16,7 @@ type
     mouse: PMouse;
     buttonA, buttonB: PButton;
     bus: PMessageBus;
+    running: boolean;
   end;
 
 constructor TExampleApp.init;
@@ -23,7 +24,7 @@ var
   point: TPoint;
 begin
   inherited init;
-  display := new(PVideoDisplay, initWithDriver(EVideoDriverEGA));
+  display := new(PVideoDisplay, initWithDriver(EVideoDriverVGA));
   mouse := new(PMouse, init);
   bus := new(PMessageBus, init);  
   buttonA := new(PButton, init);
@@ -68,12 +69,14 @@ begin
       beep
     else if PButton(msg^.sender) = buttonB then begin
       beep; beep;
+      running := false;
     end;
 end;
 
 procedure TExampleApp.run;
 begin
-  while not keypressed or (readkey<>C_ESC) do mouse^.update;
+  running := true;
+  while running do mouse^.update;
 end;
 
 { Main program }
