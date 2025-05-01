@@ -1,6 +1,6 @@
 uses
   usystem    { Manages running apps }
-  ,uapp      { Represents a Meteor app } 
+  ,uprocess  { Represents a Meteor process } 
   ,ummsgs    { Message codes for Meteor system events }
   ;
 

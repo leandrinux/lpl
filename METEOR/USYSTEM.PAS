@@ -11,7 +11,7 @@ interface
   uses
     ascii, consts, utils, types, locale,
     uobject, uexc, ulist, umsgbus,
-    uapp, umouse, ukeybrd, udisplay, umsgs, ummsgs;
+    uprocess, umouse, ukeybrd, udisplay, umsgs, ummsgs;
 
   const
     C_System_CLASSNAME = 'TSystem';
@@ -23,14 +23,18 @@ interface
       constructor init;
       destructor done; virtual;
       procedure start;
-      procedure loadApp(app: PMeteorApp);
+      procedure load(process: PProcess);
       procedure receiveMessage(msg: PObjectMessage); virtual;
       function getClassName: string; virtual;
     private
       _display: PVideoDisplay;
       _bus: PMessageBus;
-      _apps: PList;
       _running: boolean;
+      _pendingList: PList;
+      _runningList: PList;
+      procedure startPendingProcesses;
+      procedure executeRunningProcesses;
+      procedure killRunningProcesses;
     end;
 
 implementation
@@ -40,12 +44,13 @@ implementation
   constructor TSystem.init;
   begin
     inherited init;
-    _apps := new(PList, init);
+    _pendingList := new(PList, init);
+    _runningList := new(PList, init);
     _bus := new(PMessageBus, init);
     _bus^.subscribe(@self);
     _display := new(PVideoDisplay, initWithDriver(EVideoDriverEGA));
-    Keyboard^.setDelegate(@self);   { send keyboard messages to the user interface }
-    Mouse^.setDelegate(@self);      { send mouse messages to the user interface }
+    Keyboard^.setDelegate(_bus);   { send keyboard messages to the message bus }
+    Mouse^.setDelegate(_bus);      { send mouse messages to the message bus }
   end;
 
   destructor TSystem.done;
@@ -53,28 +58,37 @@ implementation
     _display^.release;
     _bus^.unsubscribe(@self);
     _bus^.release;
-    _apps^.release;
+    _pendingList^.release;
+    _runningList^.release;
     inherited done;
   end;
 
   procedure TSystem.start;
   begin
     _running := true;
-    _display^.start(1);            { start the graphics mode }
+    (*
+    _display^.start(0);            { start the graphics mode }
+    *)
     Mouse^.reset;                  { prepare the mouse after changing video mode }
     Mouse^.show;                   { show the mouse cursor }
     while _running do
     begin
       Mouse^.update;               { update mouse status }
       Keyboard^.update;            { update keyboard status }
+      startPendingProcesses;
+      executeRunningProcesses;
     end;
+    killRunningProcesses;
     Mouse^.hide;                   { hide the mouse cursor }
+    (*
     _display^.stop;                 { stops the graphics mode }
+    *)
   end;
 
-  procedure TSystem.loadApp(app: PMeteorApp);
+  procedure TSystem.load(process: PProcess);
   begin
-    _apps^.addObject(app);
+    if process = nil then exit;
+    _pendingList^.addObject(process);
   end;
 
   procedure TSystem.receiveMessage(msg: PObjectMessage);
@@ -95,6 +109,47 @@ implementation
   end;
 
   { TSystem private }
+
+  procedure TSystem.startPendingProcesses;
+  var
+    process: PProcess;
+  begin
+    process := PProcess(_pendingList^.getFirst);
+    while process <> nil do
+    begin
+      process^.start;
+      _runningList^.addObject(process);
+      _pendingList^.removeFirst;
+      process := PProcess(_pendingList^.getFirst);
+    end;
+  end;
+
+  procedure TSystem.executeRunningProcesses;
+  var
+    process: PProcess;
+  begin
+    _runningList^.moveToStart;
+    process := PProcess(_runningList^.getObjectAtCursor);
+    while process <> nil do
+    begin
+      process^.run;
+      _runningList^.moveForward;
+      process := PProcess(_runningList^.getObjectAtCursor);
+    end;
+  end;
+
+  procedure TSystem.killRunningProcesses;
+  var
+    process: PProcess;
+  begin
+    process := PProcess(_runningList^.getFirst);
+    while process <> nil do
+    begin
+      process^.kill;
+      _runningList^.removeFirst;
+      process := PProcess(_runningList^.getFirst);
+    end;
+  end;
 
   { Other }
 
