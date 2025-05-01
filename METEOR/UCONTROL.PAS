@@ -21,20 +21,23 @@ interface
     public
       constructor init;
       destructor done; virtual;
-      procedure draw(bitmap: PBitmap); virtual;
+      procedure draw; virtual;
       procedure setPosition(position: PPoint);
       procedure setSize(size: PSize);
       procedure setParent(parent: PControl);
+      procedure setBitmap(bitmap: PBitmap);
       procedure getAbsolutePosition(var point: TPoint);
       function isPointOver(coordinate: PPoint): boolean;
       function getPosition: PPoint;
       function getSize: PSize;
       function getParent: PControl;
+      function getBitmap: PBitmap;
       function getClassName: string; virtual;
     private
       _position: TPoint;
       _size: TSize;
       _parent: PControl;
+      _bitmap: PBitmap;
     end;
 
 implementation
@@ -47,6 +50,7 @@ implementation
     _position := C_POINT_ZERO;
     _size := C_SIZE_ZERO;
     _parent := nil;
+    _bitmap := nil;
   end;
 
   destructor TControl.done;
@@ -54,7 +58,7 @@ implementation
     inherited done;
   end;
 
-  procedure TControl.draw(bitmap: PBitmap);
+  procedure TControl.draw;
   begin  
   end;
 
@@ -71,6 +75,11 @@ implementation
   procedure TControl.setParent(parent: PControl);
   begin
     _parent := parent;
+  end;
+
+  procedure TControl.setBitmap(bitmap: PBitmap);
+  begin
+    _bitmap := bitmap;
   end;
 
   procedure TControl.getAbsolutePosition(var point: TPoint);
@@ -111,6 +120,11 @@ implementation
   function TControl.getParent: PControl;
   begin
     getParent := _parent;
+  end;
+
+  function TControl.getBitmap: PBitmap;
+  begin
+    getBitmap := _bitmap;
   end;
   
   function TControl.getClassName: string;

@@ -35,7 +35,8 @@ begin
   mouse^.setDelegate(bus);
 
   buttonA^.setCaption('One beep');
-  buttonA^.draw(display);
+  buttonA^.setBitmap(display);
+  buttonA^.draw;
   buttonA^.setDelegate(@self);
   bus^.subscribe(buttonA);
 
@@ -43,7 +44,8 @@ begin
   point.y := 10;
   buttonB^.setPosition(@point);
   buttonB^.setCaption('Two beeps');
-  buttonB^.draw(display);
+  buttonB^.setBitmap(display);
+  buttonB^.draw;
   buttonB^.setDelegate(@self);
   bus^.subscribe(buttonB);
 end;

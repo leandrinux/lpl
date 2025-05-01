@@ -19,17 +19,25 @@ interface
     C_MSG_BUTTON_ONCLICK = 100;
 
   type
+    EButtonState = (
+      EButtonStateUp,
+      EButtonStateDown
+    );
+
     PButton = ^TButton;
     TButton = object (TControl)
     public
       constructor init;
       destructor done; virtual;
-      procedure draw(bitmap: PBitmap); virtual;
+      procedure draw; virtual;
       procedure setCaption(const caption: string);
       function getClassName: string; virtual;
       procedure receiveMessage(msg: PObjectMessage); virtual;
     private
       _caption: PString;
+      _state: EButtonState;
+      procedure drawUp;
+      procedure drawDown;
     end;
 
 implementation
@@ -46,6 +54,7 @@ implementation
     setPosition(@C_DEFAULT_BUTTON_POSITION);
     setSize(@C_DEFAULT_BUTTON_SIZE);
     _caption := nil;
+    _state := EButtonStateUp;
   end;
 
   destructor TButton.done;
@@ -54,38 +63,12 @@ implementation
     inherited done;
   end;
 
-  procedure TButton.draw(bitmap: PBitmap);
-  var
-    canvas: PCanvas;
-    position: TPoint;
-    size: TSize;
-    tr: PTextRenderer;
+  procedure TButton.draw;
   begin
-    canvas := new(PCanvas, initWithBitmap(bitmap));
-    tr := new(PTextRenderer, init);
-    tr^.setCanvas(canvas);
-    tr^.setFont(CatusMono);
-    position := getPosition^;
-    size := getSize^;
-    with canvas^, position, size do
-    begin
-      setFillColor(ColorScheme^.background);
-      filledRect(x, y, width, height);
-      setStrokeColor(ColorScheme^.highlight);
-      hline(x, x+width-1, y);
-      vline(y, y+height-1, x);
-      setStrokeColor(ColorScheme^.shadow);
-      hline(x, x+width-1, y+height-1);
-      vline(y, y+height-1, x+width-1);
-      setStrokeColor(ColorScheme^.foreground);
-      if _caption <> nil then 
-      begin
-        tr^.setCursor(x+3, y+3);
-        tr^.write(_caption^.getValue);
-      end;
+    case _state of
+      EButtonStateUp: drawUp;
+      EButtonStateDown: drawDown;
     end;
-    tr^.release;
-    canvas^.release;
   end;
 
   procedure TButton.setCaption(const caption: string);
@@ -102,11 +85,87 @@ implementation
   procedure TButton.receiveMessage(msg: PObjectMessage);
   begin
     if getDelegate = nil then exit;
-    if (msg^.opcode = C_MSG_MOUSE_LEFT_DOWN) and (isPointOver(PPoint(msg^.payload))) then 
+    if (msg^.opcode = C_MSG_MOUSE_LEFT_DOWN) and (isPointOver(PPoint(msg^.payload))) then
+    begin
+      _state := EButtonStateDown;
+      draw;
       sendMessage(C_MSG_BUTTON_ONCLICK, getDelegate);
+    end else if (msg^.opcode = C_MSG_MOUSE_LEFT_UP) and (_state = EButtonStateDown) then
+    begin
+      _state := EButtonStateUp;
+      draw;     
+    end;
   end;
 
   { TButton private }
+
+  procedure TButton.drawUp;
+  var
+    canvas: PCanvas;
+    position: TPoint;
+    size: TSize;
+    tr: PTextRenderer;
+  begin
+    canvas := new(PCanvas, initWithBitmap(getBitmap));
+    tr := new(PTextRenderer, init);
+    tr^.setCanvas(canvas);
+    tr^.setFont(CatusMono);
+    position := getPosition^;
+    size := getSize^;
+    with canvas^, position, size do
+    begin
+      setFillColor(ColorScheme^.background);
+      filledRect(x, y, width, height);
+      setStrokeColor(ColorScheme^.highlight);
+      hline(x, x+width-1, y);
+      vline(y, y+height-1, x);
+      setStrokeColor(ColorScheme^.shadow);
+      hline(x, x+width-1, y+height-1);
+      vline(y, y+height-1, x+width-1);
+      setStrokeColor(ColorScheme^.activeText);
+      if _caption <> nil then 
+      begin
+        tr^.setCursor(x+3, y+3);
+        tr^.write(_caption^.getValue);
+      end;
+    end;
+    tr^.release;
+    canvas^.release;
+  end;
+
+  procedure TButton.drawDown;
+  var
+    canvas: PCanvas;
+    position: TPoint;
+    size: TSize;
+    tr: PTextRenderer;
+  begin
+    canvas := new(PCanvas, initWithBitmap(getBitmap));
+    tr := new(PTextRenderer, init);
+    tr^.setCanvas(canvas);
+    tr^.setFont(CatusMono);
+    position := getPosition^;
+    size := getSize^;
+    with canvas^, position, size do
+    begin
+      setFillColor(ColorScheme^.background);
+      filledRect(x, y, width, height);
+      setStrokeColor(ColorScheme^.shadow);
+      hline(x, x+width-1, y);
+      vline(y, y+height-1, x);
+      setStrokeColor(ColorScheme^.highlight);
+      hline(x, x+width-1, y+height-1);
+      vline(y, y+height-1, x+width-1);
+      setStrokeColor(ColorScheme^.inactiveText);
+      if _caption <> nil then 
+      begin
+        tr^.setCursor(x+3, y+3);
+        tr^.write(_caption^.getValue);
+      end;
+    end;
+    tr^.release;
+    canvas^.release;
+  end;
 
   { Other }
 
