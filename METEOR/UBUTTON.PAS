@@ -11,7 +11,7 @@ interface
   uses
     consts, utils, types, locale,
     uobject, uexc, ucontrol, ubitmap, ucanvas, umsgs, 
-    ustring, utrender, ufcatusm;
+    ustring, utrender, ufcatusm, ucscheme;
 
   const
     C_Button_CLASSNAME = 'TButton';
@@ -69,13 +69,15 @@ implementation
     size := getSize^;
     with canvas^, position, size do
     begin
-      setStrokeColor(2);
+      setFillColor(ColorScheme^.background);
+      filledRect(x, y, width, height);
+      setStrokeColor(ColorScheme^.highlight);
       hline(x, x+width-1, y);
       vline(y, y+height-1, x);
-      setStrokeColor(1);
+      setStrokeColor(ColorScheme^.shadow);
       hline(x, x+width-1, y+height-1);
       vline(y, y+height-1, x+width-1);
-      setStrokeColor(3);
+      setStrokeColor(ColorScheme^.foreground);
       if _caption <> nil then 
       begin
         tr^.setCursor(x+3, y+3);
