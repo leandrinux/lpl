@@ -9,23 +9,21 @@ uses
   ubutton;
 
 type
-  PMyButton = ^TMyButton;
-  TMyButton = object (TButton)
+  PEventHandler = ^TEventHandler;
+  TEventHandler = object (TButton)
     procedure receiveMessage(msg: PObjectMessage); virtual;
   end;
 
-procedure TMyButton.receiveMessage(msg: PObjectMessage);
+procedure TEventHandler.receiveMessage(msg: PObjectMessage); 
 begin
-  if (msg^.opcode = C_MSG_MOUSE_LEFT_DOWN) and (isPointOver(PPoint(msg^.payload))) then 
-  begin    
-    beep;
-  end;
+  if msg^.opcode = C_MSG_BUTTON_ONCLICK then beep;
 end;
 
 var 
   display: PVideoDisplay;
   mouse: PMouse;
-  button: PMyButton;
+  eventHandler: PEventHandler;
+  button: PButton;
 
 begin
   display := new(PVideoDisplay, initWithDriver(EVideoDriverEGA));
@@ -34,14 +32,17 @@ begin
   mouse^.reset;
   mouse^.show;
 
-  button := new(PMyButton, init);
+  eventHandler := new(PEventHandler, init);
+  button := new(PButton, init);
   button^.draw(display);
   mouse^.setDelegate(button);
+  button^.setDelegate(eventHandler);
   while not keypressed or (readkey<>C_ESC) do
   begin
     mouse^.update;
   end;
   button^.release;
+  eventHandler^.release;
 
   mouse^.hide;
   mouse^.release;

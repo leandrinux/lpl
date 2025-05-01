@@ -11,7 +11,7 @@ interface
   const
     { standard notifications }
     C_MSG_EXCEPTION            = 1;
-    C_MSG_STREAM_COPY_PROGRESS = 100;
+    C_MSG_STREAM_COPY_PROGRESS = 2;
 
     C_MSG_MOUSE_MOVEMENT       = 10;
     C_MSG_MOUSE_LEFT_UP        = 11;

@@ -10,10 +10,12 @@ interface
 
   uses
     consts, utils, types, locale,
-    uobject, uexc, ucontrol, ubitmap, ucanvas;
+    uobject, uexc, ucontrol, ubitmap, ucanvas, umsgs;
 
   const
     C_Button_CLASSNAME = 'TButton';
+
+    C_MSG_BUTTON_ONCLICK = 100;
 
   type
     PButton = ^TButton;
@@ -23,6 +25,7 @@ interface
       destructor done; virtual;
       procedure draw(bitmap: PBitmap); virtual;
       function getClassName: string; virtual;
+      procedure receiveMessage(msg: PObjectMessage); virtual;
     private
     end;
 
@@ -70,6 +73,13 @@ implementation
   function TButton.getClassName: string;
   begin
     getClassName := C_Button_CLASSNAME;
+  end;
+
+  procedure TButton.receiveMessage(msg: PObjectMessage);
+  begin
+    if getDelegate = nil then exit;
+    if (msg^.opcode = C_MSG_MOUSE_LEFT_DOWN) and (isPointOver(PPoint(msg^.payload))) then 
+      sendMessage(C_MSG_BUTTON_ONCLICK, getDelegate);
   end;
 
   { TButton private }
