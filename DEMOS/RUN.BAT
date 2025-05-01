@@ -1,4 +1,7 @@
 @echo off
+cd ..
+call build
+cd demos
 rem config -set "cpu cycles=max"
 tpc %1\%2.pas -E\bin
 if errorlevel 1 goto end

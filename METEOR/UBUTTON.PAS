@@ -10,7 +10,8 @@ interface
 
   uses
     consts, utils, types, locale,
-    uobject, uexc, ucontrol, ubitmap, ucanvas, umsgs;
+    uobject, uexc, ucontrol, ubitmap, ucanvas, umsgs, 
+    ustring, utrender, ufcatusm;
 
   const
     C_Button_CLASSNAME = 'TButton';
@@ -24,9 +25,11 @@ interface
       constructor init;
       destructor done; virtual;
       procedure draw(bitmap: PBitmap); virtual;
+      procedure setCaption(const caption: string);
       function getClassName: string; virtual;
       procedure receiveMessage(msg: PObjectMessage); virtual;
     private
+      _caption: PString;
     end;
 
 implementation
@@ -42,10 +45,12 @@ implementation
     inherited init;
     setPosition(@C_DEFAULT_BUTTON_POSITION);
     setSize(@C_DEFAULT_BUTTON_SIZE);
+    _caption := nil;
   end;
 
   destructor TButton.done;
   begin
+    if _caption <> nil then _caption^.release;
     inherited done;
   end;
 
@@ -54,20 +59,37 @@ implementation
     canvas: PCanvas;
     position: TPoint;
     size: TSize;
+    tr: PTextRenderer;
   begin
-    canvas := new (PCanvas, initWithBitmap(bitmap));
+    canvas := new(PCanvas, initWithBitmap(bitmap));
+    tr := new(PTextRenderer, init);
+    tr^.setCanvas(canvas);
+    tr^.setFont(CatusMono);
     position := getPosition^;
     size := getSize^;
     with canvas^, position, size do
     begin
-      setStrokeColor(1);
+      setStrokeColor(2);
       hline(x, x+width-1, y);
       vline(y, y+height-1, x);
-      setStrokeColor(2);
+      setStrokeColor(1);
       hline(x, x+width-1, y+height-1);
       vline(y, y+height-1, x+width-1);
+      setStrokeColor(3);
+      if _caption <> nil then 
+      begin
+        tr^.setCursor(x+3, y+3);
+        tr^.write(_caption^.getValue);
+      end;
     end;
+    tr^.release;
     canvas^.release;
+  end;
+
+  procedure TButton.setCaption(const caption: string);
+  begin
+    if _caption <> nil then _caption^.release;
+    _caption := new(PString, initWithValue(caption));
   end;
 
   function TButton.getClassName: string;

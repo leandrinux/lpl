@@ -34,16 +34,18 @@ begin
   mouse^.show;
   mouse^.setDelegate(bus);
 
+  buttonA^.setCaption('One beep');
   buttonA^.draw(display);
-  bus^.subscribe(buttonA);
   buttonA^.setDelegate(@self);
+  bus^.subscribe(buttonA);
 
   point.x := 100;
   point.y := 10;
   buttonB^.setPosition(@point);
+  buttonB^.setCaption('Two beeps');
   buttonB^.draw(display);
-  bus^.subscribe(buttonB);
   buttonB^.setDelegate(@self);
+  bus^.subscribe(buttonB);
 end;
 
 destructor TExampleApp.done;
