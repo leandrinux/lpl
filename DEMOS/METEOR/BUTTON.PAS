@@ -1,15 +1,31 @@
 uses
   ascii,
+  types,
   xcrt,
   udisplay,
+  uobject,
+  umsgs,
   umouse,
   ubutton;
+
+type
+  PMyButton = ^TMyButton;
+  TMyButton = object (TButton)
+    procedure receiveMessage(msg: PObjectMessage); virtual;
+  end;
+
+procedure TMyButton.receiveMessage(msg: PObjectMessage);
+begin
+  if (msg^.opcode = C_MSG_MOUSE_LEFT_DOWN) and (isPointOver(PPoint(msg^.payload))) then 
+  begin    
+    beep;
+  end;
+end;
 
 var 
   display: PVideoDisplay;
   mouse: PMouse;
-
-  button: PButton;
+  button: PMyButton;
 
 begin
   display := new(PVideoDisplay, initWithDriver(EVideoDriverEGA));
@@ -18,12 +34,12 @@ begin
   mouse^.reset;
   mouse^.show;
 
-  button := new(PButton, init);
+  button := new(PMyButton, init);
   button^.draw(display);
+  mouse^.setDelegate(button);
   while not keypressed or (readkey<>C_ESC) do
   begin
     mouse^.update;
-    if mouse^.isLeftDown and button^.isPointOver(mouse^.getPosition) then beep;
   end;
   button^.release;
 
