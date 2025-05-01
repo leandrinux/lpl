@@ -13,6 +13,7 @@ interface
 
   const
     C_POINT_ZERO: TPoint = ( x:0; y:0 );
+    C_SIZE_ZERO: TSize = ( width:0; height:0 );
     C_SIZE_MAX: TSize = ( width:$FFFF; height: $FFFF );
     C_NOT_FOUND = $FFFFFFFF;
     C_FILE_PATH_SEPARATOR = '\';

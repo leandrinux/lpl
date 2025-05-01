@@ -24,8 +24,6 @@ interface
       procedure draw(bitmap: PBitmap); virtual;
       function getClassName: string; virtual;
     private
-      position: TPoint;
-      size: TSize;
     end;
 
 implementation
@@ -39,8 +37,8 @@ implementation
   constructor TButton.init;
   begin
     inherited init;
-    position := C_DEFAULT_BUTTON_POSITION;
-    size := C_DEFAULT_BUTTON_SIZE;
+    setPosition(@C_DEFAULT_BUTTON_POSITION);
+    setSize(@C_DEFAULT_BUTTON_SIZE);
   end;
 
   destructor TButton.done;
@@ -51,8 +49,12 @@ implementation
   procedure TButton.draw(bitmap: PBitmap);
   var
     canvas: PCanvas;
+    position: TPoint;
+    size: TSize;
   begin
     canvas := new (PCanvas, initWithBitmap(bitmap));
+    position := getPosition^;
+    size := getSize^;
     with canvas^, position, size do
     begin
       setStrokeColor(1);

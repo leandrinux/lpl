@@ -20,9 +20,10 @@ begin
 
   button := new(PButton, init);
   button^.draw(display);
-  while (not keypressed) and (readkey<>C_ESC) do
+  while not keypressed or (readkey<>C_ESC) do
   begin
-    
+    mouse^.update;
+    if mouse^.isLeftDown and button^.isPointOver(mouse^.getPosition) then beep;
   end;
   button^.release;
 
