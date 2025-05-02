@@ -162,7 +162,20 @@ implementation
   end;  
 
   procedure TVGAVideoDriver.setBlock(x, y, width, height: word; color: TColor8);
+  var 
+    i, offset: word;
+    p: ^byte;
   begin
+    if _mode = 0 then
+    begin
+      for i := y+height-1 downto y do
+      begin 
+        offset := i shl 8 + i shl 6 + x;
+        p := ptr($A000, offset);
+        fillchar(p^, width-1 ,color);
+      end;
+    end else
+      inherited setBlock(x, y, width, height, color);
   end;
 
   function TVGAVideoDriver.getPixel(x, y: word): byte;

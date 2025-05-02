@@ -35,7 +35,7 @@ begin
   mouse^.show;
   mouse^.setDelegate(bus);
 
-  buttonA^.setCaption('One beep');
+  buttonA^.setCaption('Beep');
   buttonA^.setBitmap(display);
   buttonA^.draw;
   buttonA^.setDelegate(@self);
@@ -44,7 +44,7 @@ begin
   point.x := 100;
   point.y := 10;
   buttonB^.setPosition(@point);
-  buttonB^.setCaption('Two beeps');
+  buttonB^.setCaption('Quit');
   buttonB^.setBitmap(display);
   buttonB^.draw;
   buttonB^.setDelegate(@self);
@@ -68,7 +68,6 @@ begin
     if PButton(msg^.sender) = buttonA then
       beep
     else if PButton(msg^.sender) = buttonB then begin
-      beep; beep;
       running := false;
     end;
 end;
@@ -76,7 +75,11 @@ end;
 procedure TExampleApp.run;
 begin
   running := true;
-  while running do mouse^.update;
+  while running do 
+  begin
+    if keypressed and (readkey=C_ESC) then running := false;
+    mouse^.update;
+  end;
 end;
 
 { Main program }
